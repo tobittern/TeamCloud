@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.oss.service.impl.AliyunOssStrategy,\
+  com.euler.common.oss.service.impl.MinioOssStrategy,\
+  com.euler.common.oss.service.impl.QcloudOssStrategy,\
+  com.euler.common.oss.service.impl.QiniuOssStrategy,\
+  com.euler.common.oss.service.impl.UpyunOssStrategy

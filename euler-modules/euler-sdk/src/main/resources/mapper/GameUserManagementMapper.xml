@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GameUserManagementMapper">
+
+    <resultMap type="com.euler.sdk.api.domain.GameUserManagement" id="GameUserManagementResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleLevel" column="role_level"/>
+        <result property="vipLevel" column="vip_level"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="gameDays" column="game_days"/>
+        <result property="gameDuration" column="game_duration"/>
+        <result property="uniqueId" column="unique_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.sdk.api.domain.GameUserManagementVo" id="gameUserDetailVoResult">
+        <result property="memberId" column="member_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="gameName" column="game_name"/>
+        <result property="roleLevel" column="role_level"/>
+        <result property="vipLevel" column="vip_level"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="loginDate" column="login_date"/>
+    </resultMap>
+
+    <sql id="gameUserDetailSql">
+        SELECT
+            g.member_id,
+            g.role_id,
+            g.role_name,
+            g.game_id,
+            o.game_name,
+            o.operation_platform,
+            g.server_id,
+            g.server_name,
+            g.package_code,
+            g.role_level,
+            g.vip_level,
+            g.create_time,
+            IFNULL( c.channel_name, '默认渠道' ) channel_name,
+            c. id channel_id,
+            g.update_time login_date
+        FROM
+            game_user_management g
+                left join  member_profile mp on g.member_id=mp.member_id
+                left JOIN open_game o on g.game_id=o.id
+                LEFT JOIN channel_package cp ON g.game_id = cp.game_id
+                AND g.package_code = cp.package_code
+                AND cp.package_code != 'default'
+                LEFT JOIN channel c ON cp.channel_id = c.id
+    </sql>
+
+    <select id="getGameUserDetailPageList" parameterType="com.euler.sdk.domain.dto.GameUserManagementDto"
+            resultMap="gameUserDetailVoResult">
+        <include refid="gameUserDetailSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getGameUserInfo" parameterType="com.euler.sdk.api.domain.GameUserManagement" resultMap="GameUserManagementResult">
+        select * from game_user_management
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <update id="updateGameUserDataById" parameterType="com.euler.sdk.api.domain.GameUserManagement">
+        UPDATE game_user_management SET
+              `member_id`=#{memberId}, `game_id`=#{gameId}, `game_name`=#{gameName}, `package_code`=#{packageCode}, `role_id`=#{roleId}, `role_name`=#{roleName}, `role_level`=#{roleLevel}, `vip_level`=#{vipLevel},`server_id`=#{serverId},
+              `server_name`=#{serverName}, `game_days`=#{gameDays}, `game_duration`=#{gameDuration},`channel_id`=#{channelId}, `channel_name`=#{channelName}, update_by=#{updateBy}, update_time=#{updateTime}, del_flag='0'
+        WHERE id=#{id}
+    </update>
+</mapper>

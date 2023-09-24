@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-modules</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>euler-resource</artifactId>
+
+    <description>
+        euler-resource资源服务
+    </description>
+
+    <dependencies>
+
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-security</artifactId>
+        </dependency>
+        <!-- Euler Common Swagger -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-seata</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-oss</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-mybatis</artifactId>
+        </dependency>
+
+        <!-- Euler Api System -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-api-system</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-api-resource</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

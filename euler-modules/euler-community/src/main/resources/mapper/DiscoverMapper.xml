@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.DiscoverMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Discover" id="DiscoverResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="title" column="title"/>
+        <result property="introduce" column="introduce"/>
+        <result property="moduleType" column="module_type"/>
+        <result property="status" column="status"/>
+        <result property="applicationSystem" column="application_system"/>
+        <result property="level" column="level"/>
+        <result property="content" column="content"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!-- 发现页查询搜索内容 -->
+    <select id="queryDiscover" resultType="com.euler.community.domain.entity.Discover" parameterType="java.util.Map">
+        select *
+        from discover d
+        where d.del_flag = 0
+          and d.status = 1
+          and d.content LIKE concat('%', #{key,jdbcType=VARCHAR}, '%')
+    </select>
+
+</mapper>

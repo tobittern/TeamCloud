@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-cloud</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>euler-common-bom</module>
+        <module>euler-common-alibaba-bom</module>
+        <module>euler-common-log</module>
+        <module>euler-common-dict</module>
+        <module>euler-common-excel</module>
+        <module>euler-common-core</module>
+        <module>euler-common-redis</module>
+        <module>euler-common-swagger</module>
+        <module>euler-common-security</module>
+        <module>euler-common-satoken</module>
+        <module>euler-common-web</module>
+        <module>euler-common-mybatis</module>
+        <module>euler-common-job</module>
+        <module>euler-common-dubbo</module>
+        <module>euler-common-seata</module>
+        <module>euler-common-loadbalancer</module>
+        <module>euler-common-oss</module>
+        <module>euler-common-idempotent</module>
+        <module>euler-common-sms</module>
+        <module>euler-common-payment</module>
+        <module>euler-common-rabbitmq</module>
+    </modules>
+
+    <artifactId>euler-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        euler-common通用模块
+    </description>
+
+</project>

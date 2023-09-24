@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.TfIpSummaryMapper">
+
+    <resultMap type="com.euler.risk.domain.entity.TfIpSummary" id="TfIpSummaryResult">
+        <result property="id" column="id"/>
+        <result property="dateId" column="date_id"/>
+        <result property="ip" column="ip"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="registerNum" column="register_num"/>
+        <result property="loginNum" column="login_num"/>
+        <result property="roleCreateNum" column="role_create_num"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="fillData">
+        INSERT INTO tf_ip_summary (date_id,
+                                   ip,
+                                   register_num,
+                                   login_num,
+                                   role_create_num,
+                                   create_time)
+
+        SELECT DATE_FORMAT(b.create_time, '%Y-%m-%d')      date_id,
+               b.ip,
+               sum(if(bt.model_code = 'register', 1, 0))   register_num,
+               sum(if(bt.model_code = 'login', 1, 0))      login_num,
+               sum(if(bt.model_code = 'roleCreate', 1, 0)) role_create_num,
+               now()
+        from behavior b
+                 INNER JOIN behavior_type bt
+                            on b.behavior_type_id = bt.id
+        where b.ip is not null
+          AND b.create_time BETWEEN #{beginTime} AND #{endTime}
+        group by ip
+    </insert>
+
+    <resultMap type="com.euler.risk.domain.vo.TfIpSummaryVo" id="ipSummaryResult">
+        <result property="id" column="id"/>
+        <result property="dateId" column="date_id"/>
+        <result property="ip" column="ip"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="registerNum" column="register_num"/>
+        <result property="loginNum" column="login_num"/>
+        <result property="roleCreateNum" column="role_create_num"/>
+    </resultMap>
+
+    <select id="selectIpSummaryList" resultMap="ipSummaryResult">
+        SELECT distinct id,
+                        date_id,
+                        ip,
+                        ip_address,
+                        ifnull(sum(register_num), 0)    AS register_num,
+                        ifnull(sum(login_num), 0)       AS login_num,
+                        ifnull(sum(role_create_num), 0) AS role_create_num
+        from tf_ip_summary ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

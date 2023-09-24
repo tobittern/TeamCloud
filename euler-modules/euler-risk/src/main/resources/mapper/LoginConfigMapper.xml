@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.LoginConfigMapper">
+
+    <resultMap type="com.euler.risk.domain.entity.LoginConfig" id="LoginConfigResult">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="platformType" column="platform_type"/>
+        <result property="globalConfig" column="global_config"/>
+        <result property="platform" column="platform"/>
+        <result property="mobileLogin" column="mobile_login"/>
+        <result property="idLogin" column="id_login"/>
+        <result property="captchaLogin" column="captcha_login"/>
+        <result property="passwordLogin" column="password_login"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+</mapper>

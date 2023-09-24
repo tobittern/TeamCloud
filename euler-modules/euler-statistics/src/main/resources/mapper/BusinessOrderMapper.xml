@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.BusinessOrderMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.BusinessOrder" id="BusinessOrderResult">
+        <result property="id" column="id"/>
+        <result property="orderState" column="order_state"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="memberId" column="member_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gameRoleId" column="game_role_id"/>
+        <result property="gameRoleName" column="game_role_name"/>
+        <result property="gameChannelId" column="game_channel_id"/>
+        <result property="gamePackageCode" column="game_package_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.euler.statistics.domain.vo.BusinessOrderSimpleVo" id="BusinessOrderSimpleVoResult">
+        <result property="id" column="id"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="memberId" column="member_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameRoleId" column="game_role_id"/>
+        <result property="gameServerId" column="game_server_id"/>
+        <result property="gamePackageCode" column="game_package_code"/>
+        <result property="dateFormat" column="date_format"/>
+        <result property="dateFormatNumbers" column="date_format_numbers"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <sql id="BusinessOrderSimpleSql">
+        SELECT id, order_amount, member_id, game_id, game_role_id, game_server_id, game_package_code, create_time, DATE_FORMAT(create_time,'%Y-%m-%d') as date_format, DATE_FORMAT(create_time,'%Y%m%d') as date_format_numbers
+        FROM business_order
+    </sql>
+
+
+    <select id="selectBusinessOrderSimpleData" parameterType="com.euler.statistics.domain.vo.BusinessOrderSimpleVo"
+            resultMap="BusinessOrderSimpleVoResult">
+        <include refid="BusinessOrderSimpleSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <resultMap type="com.euler.statistics.domain.vo.BusinessOrderSimpleDateVo" id="BusinessOrderSimpleDateVoResult">
+        <result property="orderNums" column="order_nums"/>
+        <result property="orderAmounts" column="order_amounts"/>
+        <result property="dateFormat" column="date_format"/>
+        <result property="dateFormatNumbers" column="date_format_numbers"/>
+    </resultMap>
+
+
+    <sql id="BusinessOrderSimpleDateSql">
+        SELECT count(id) as order_nums, sum(order_amount) as order_amounts, DATE_FORMAT(create_time,'%Y-%m-%d') as date_format, DATE_FORMAT(create_time,'%Y%m%d') as date_format_numbers
+        FROM business_order
+    </sql>
+
+
+    <select id="selectBusinessOrderSimpleDataBySql" parameterType="com.euler.statistics.domain.vo.BusinessOrderSimpleDateVo"
+            resultMap="BusinessOrderSimpleDateVoResult">
+        <include refid="BusinessOrderSimpleDateSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.MemberRightsMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.MemberRights" id="MemberRightsResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="lever" column="lever"/>
+        <result property="status" column="status"/>
+        <result property="isUpgrade" column="is_upgrade"/>
+        <result property="memberDuration" column="member_duration"/>
+        <result property="validateStartTime" column="validate_start_time"/>
+        <result property="validateEndTime" column="validate_end_time"/>
+        <result property="uploadUrl" column="upload_url"/>
+        <result property="uploadFileName" column="upload_file_name"/>
+        <result property="uploadFileSuffix" column="upload_file_suffix"/>
+        <result property="uploadStatus" column="upload_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="payPrice" column="pay_price"/>
+    </resultMap>
+
+</mapper>

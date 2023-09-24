@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.TfUserQuotaMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.TfUserQuota" id="TfUserQuotaResult">
+        <result property="id" column="id"/>
+        <result property="dateId" column="date_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="measureId" column="measure_id"/>
+        <result property="measureValue" column="measure_value"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+</mapper>

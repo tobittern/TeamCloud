@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-modules</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>euler-collection</artifactId>
+
+    <description>
+        euler-collection信息收集模块
+    </description>
+
+    <dependencies>
+
+        <!-- SpringCloud Alibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- SpringCloud Alibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-security</artifactId>
+        </dependency>
+
+        <!-- Euler Common Log -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-dict</artifactId>
+        </dependency>
+
+        <!-- Euler Common Swagger -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-seata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-idempotent</artifactId>
+        </dependency>
+        <!-- Euler Api System -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-api-platform</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-api-sdk</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

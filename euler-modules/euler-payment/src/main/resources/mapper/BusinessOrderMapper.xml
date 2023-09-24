@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.payment.mapper.BusinessOrderMapper">
+
+    <resultMap type="com.euler.payment.domain.BusinessOrder" id="BusinessOrderResult">
+        <result property="id" column="id"/>
+        <result property="orderType" column="order_type"/>
+        <result property="payChannel" column="pay_channel"/>
+        <result property="payOrderState" column="pay_order_state"/>
+        <result property="orderState" column="order_state"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="successTime" column="success_time"/>
+        <result property="expiredTime" column="expired_time"/>
+        <result property="memberId" column="member_id"/>
+        <result property="memberNickName" column="member_nick_name"/>
+        <result property="memberAccount" column="member_account"/>
+        <result property="memberMobile" column="member_mobile"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsNum" column="goods_num"/>
+        <result property="outTradeNo" column="out_trade_no"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="goodsScribePrice" column="goods_scribe_price"/>
+        <result property="goodsImg" column="goods_img"/>
+        <result property="goodsDesc" column="goods_desc"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gameRoleId" column="game_role_id"/>
+        <result property="gameRoleName" column="game_role_name"/>
+        <result property="gameServerId" column="game_server_id"/>
+        <result property="gameServerName" column="game_server_name"/>
+        <result property="gameChannelId" column="game_channel_id"/>
+        <result property="gameChannelName" column="game_channel_name"/>
+        <result property="gamePackageCode" column="game_package_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="notifyState" column="notify_state"/>
+        <result property="appleTradeNo" column="apple_trade_no"/>
+
+    </resultMap>
+
+    <!--根据参数获取订单相关数据 -->
+    <select id="getOrderDataByparam" parameterType="java.util.Map" resultType="com.euler.payment.domain.vo.StatisticsChargeVo">
+        SELECT
+        count(o.id) as num,
+        sum(o.order_amount) as money,
+        game_channel_id as channelId
+        FROM
+        business_order o
+        WHERE
+        1=1 AND
+        <if test="orderStateList !=null and orderStateList.size()>0">
+            o.order_state IN
+            <foreach collection="orderStateList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        AND o.del_flag = #{delFlag} and o.game_channel_id is not null
+        <if test="endTime !=null">
+            and o.create_time &lt;= #{endTime}
+        </if>
+        <if test="startTime !=null">
+            and o.create_time &gt;= #{startTime}
+        </if>
+        group by o.game_channel_id
+    </select>
+
+
+    <!--根据参数获取订单充值相关数据 -->
+    <select id="getOrderChargeByparam" parameterType="java.util.Map" resultType="com.euler.payment.api.domain.BusinessOrderVo">
+        SELECT
+        o.*
+        FROM
+        business_order o
+        WHERE
+        1=1
+        <if test="orderStateList !=null and orderStateList.size()>0">
+            AND  o.order_state IN
+            <foreach collection="orderStateList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="memberIdList !=null and memberIdList.size()>0">
+            AND o.member_id IN
+            <foreach collection="memberIdList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        AND o.del_flag = #{delFlag}
+        <if test="endTime !=null">
+            AND o.create_time &lt;= #{endTime}
+        </if>
+        <if test="startTime !=null">
+            AND o.create_time &gt;= #{startTime}
+        </if>
+        <if test="gameId !=null">
+            AND o.game_id = #{gameId}
+        </if>
+        <if test="gameServerId !=null">
+            AND o.game_server_id = #{gameServerId}
+        </if>
+
+    </select>
+
+    <!-- 查询用户已支付的订单数 -->
+    <select id="getOrderCountByUser" parameterType="Long" resultType="int">
+        select count(*) from business_order
+        where member_id = #{userId} and game_id = #{gameId} and order_state = '2' and del_flag ='0'
+    </select>
+</mapper>

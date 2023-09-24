@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.collection.mapper.BehaviorMapper">
+
+    <resultMap type="com.euler.collection.domain.Behavior" id="BehaviorResult">
+        <result property="id" column="id"/>
+        <result property="bizId" column="biz_id"/>
+        <result property="bizType" column="biz_type"/>
+        <result property="behaviorType" column="behavior_type"/>
+        <result property="behaviorValue" column="behavior_value"/>
+        <result property="userId" column="user_id"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="ip" column="ip"/>
+        <result property="clientIp" column="client_ip"/>
+        <result property="appVersion" column="app_version"/>
+        <result property="appId" column="app_id"/>
+        <result property="imei" column="imei"/>
+        <result property="os" column="os"/>
+        <result property="osVersion" column="os_version"/>
+        <result property="model" column="model"/>
+        <result property="os" column="os"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="traceId" column="trace_id"/>
+        <result property="parentTraceId" column="parent_trace_id"/>
+        <result property="pageId" column="page_id"/>
+        <result property="idfa" column="idfa"/>
+        <result property="androidid" column="androidid"/>
+        <result property="oaid" column="oaid"/>
+        <result property="mac" column="mac"/>
+        <result property="ua" column="ua"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+</mapper>

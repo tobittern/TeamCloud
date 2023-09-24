@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.BasicStatisticsMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.BasicStatistics" id="BasicStatisticsResult">
+        <result property="id" column="id"/>
+        <result property="selectKey" column="select_key"/>
+        <result property="roleId" column="role_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="memberId" column="member_id"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="dateLabel" column="date_label"/>
+        <result property="loginTime" column="login_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.statistics.domain.vo.GameUserBaseDataVo" id="BaseUserRegisterListVoResult">
+        <result property="selectKey" column="select_key"/>
+        <result property="id" column="id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="memberId" column="member_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="dateLabel" column="date_label"/>
+        <result property="registerTime" column="register_time"/>
+    </resultMap>
+
+
+    <sql id="baseUserRegisterListSql">
+        SELECT CONCAT_WS("-", gum.package_code, gum.game_id) AS select_key,
+               gum.id,
+               gum.role_id,
+               gum.server_id,
+               gum.member_id,
+               gum.package_code,
+               gum.game_id,
+               gum.create_time,
+               gum.register_time,
+               gum.channel_id,
+               gum.channel_name,
+               og.game_name,
+               og.operation_platform
+        FROM game_user_management gum
+                 LEFT JOIN open_game og ON gum.game_id = og.id
+    </sql>
+
+
+    <select id="selectPointTimeList" parameterType="com.euler.statistics.domain.vo.GameUserBaseDataVo"
+            resultMap="BaseUserRegisterListVoResult">
+        <include refid="baseUserRegisterListSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <!--    <resultMap type="com.euler.statistics.domain.vo.SearchDataSummaryVo" id="SearchOtherDayDataSummaryVoResult">-->
+    <!--        <result property="memberIds" column="member_ids"/>-->
+    <!--        <result property="gameIds" column="game_ids"/>-->
+    <!--        <result property="packageCodes" column="package_codes"/>-->
+    <!--    </resultMap>-->
+
+
+    <!--    <sql id="SearchOtherDayDataSummarySql">-->
+    <!--        SELECT CONCAT_WS("-", mp.package_code, gum.game_id) AS select_key,-->
+    <!--               gum.role_id,-->
+    <!--               gum.member_id,-->
+    <!--               mp.package_code,-->
+    <!--               gum.game_id,-->
+    <!--               gum.create_time,-->
+    <!--               og.game_name,-->
+    <!--               og.operation_platform,-->
+    <!--               cp.channel_id,-->
+    <!--               c.channel_name-->
+    <!--        FROM game_user_management gum-->
+    <!--                 LEFT JOIN member_profile mp ON gum.member_id = mp.member_id-->
+    <!--                 LEFT JOIN open_game og ON gum.game_id = og.id-->
+    <!--                 LEFT JOIN channel_package cp ON gum.package_code = cp.package_code-->
+    <!--                 LEFT JOIN channel c ON cp.channel_id = c.id-->
+    <!--    </sql>-->
+
+
+    <!--    <select id="selectSearchOtherDayDataSummary" parameterType="com.euler.statistics.domain.vo.GameUserBaseDataVo"-->
+    <!--            resultMap="SearchOtherDayDataSummaryVoResult">-->
+    <!--        <include refid="SearchOtherDayDataSummarySql"/>-->
+    <!--        ${ew.getCustomSqlSegment}-->
+    <!--    </select>-->
+
+
+    <resultMap type="com.euler.statistics.domain.vo.UserRegisterBaseDataVo" id="SelectBasisForRegisterVoResult">
+        <result property="selectKey" column="select_key"/>
+        <result property="dateLabel" column="date_label"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="incrNums" column="incr_nums"/>
+        <result property="incrReportNums" column="incr_report_nums"/>
+    </resultMap>
+
+
+    <sql id="selectBasisForRegisterSql">
+        SELECT CONCAT_WS("-", mp.package_code, mp.game_id) AS select_key,
+               count(mp.id)                                AS incr_nums,
+               mp.channel_id,
+               mp.channel_name,
+               mp.game_id,
+               mp.game_name,
+               mp.package_code,
+               og.operation_platform,
+               DATE_FORMAT(mp.create_time, '%Y-%m-%d')     as date_label
+        FROM member_profile mp
+                 LEFT JOIN open_game og ON og.id = mp.game_id
+    </sql>
+
+
+    <select id="selectBasisForRegister" parameterType="com.euler.statistics.domain.vo.UserRegisterBaseDataVo"
+            resultMap="SelectBasisForRegisterVoResult">
+        <include refid="selectBasisForRegisterSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <sql id="selectBasisForGameUserManagementSql">
+        select CONCAT_WS("-", gum.package_code, gum.game_id) AS select_key,
+               count(DISTINCT gum.role_id, gum.server_id)    AS incr_report_nums,
+               DATE_FORMAT(gum.create_time, '%Y-%m-%d')      AS date_label
+        from game_user_management gum
+                 LEFT JOIN open_game og ON og.id = gum.game_id
+    </sql>
+
+    <select id="selectBasisForGameUserManagement" parameterType="com.euler.statistics.domain.vo.UserRegisterBaseDataVo"
+            resultMap="SelectBasisForRegisterVoResult">
+        <include refid="selectBasisForGameUserManagementSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <resultMap type="com.euler.common.core.domain.dto.IdDto" id="SelectBasisForRegisterByCountVoResult">
+        <result property="id" column="id"/>
+    </resultMap>
+
+    <sql id="selectBasisForRegisterByCountSql">
+        SELECT count(mp.id) AS id
+        FROM member_profile mp
+                 LEFT JOIN open_game og ON og.id = mp.game_id
+    </sql>
+
+    <select id="selectBasisForRegisterByCount" parameterType="com.euler.common.core.domain.dto.IdDto"
+            resultMap="SelectBasisForRegisterByCountVoResult">
+        <include refid="selectBasisForRegisterByCountSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <sql id="selectBasisForGameUserManagerByCountSql">
+        SELECT count(DISTINCT gum.role_id, gum.server_id) AS id
+        FROM game_user_management gum
+                 LEFT JOIN open_game og ON og.id = gum.game_id
+    </sql>
+
+    <select id="selectBasisForGameUserManagerByCount" parameterType="com.euler.common.core.domain.dto.IdDto"
+            resultMap="SelectBasisForRegisterByCountVoResult">
+        <include refid="selectBasisForGameUserManagerByCountSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <resultMap type="com.euler.common.core.domain.dto.IdNameDto" id="SelectBasisGameListVoResult">
+        <result property="id" column="id"/>
+    </resultMap>
+
+    <sql id="selectBasisGameListSql">
+        SELECT DISTINCT game_name as name, game_id as id
+        FROM basic_statistics
+    </sql>
+
+    <select id="selectBasisGameListByName" parameterType="com.euler.common.core.domain.dto.IdNameDto"
+            resultMap="SelectBasisGameListVoResult">
+        <include refid="selectBasisGameListSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+</mapper>

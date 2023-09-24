@@ -1,0 +1,2 @@
+customDubboLoadBalancer=com.euler.common.loadbalance.core.CustomDubboLoadBalancer
+

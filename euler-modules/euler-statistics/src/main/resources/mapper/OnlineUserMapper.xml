@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.OnlineUserMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.OnlineUser" id="OnlineUserResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="ipaddr" column="ipaddr"/>
+        <result property="loginTime" column="login_time"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="platform" column="platform"/>
+        <result property="device" column="device"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="selectOnlineUserNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(create_time, '%Y-%m-%d') summaryKey
+        FROM online_user ${ew.getCustomSqlSegment}
+    </select>
+    <select id="selectOnlineUserGroupNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(create_time, '%k:00') summaryKey
+        FROM online_user ${ew.getCustomSqlSegment} group by DATE_FORMAT(create_time, '%k:00')
+    </select>
+</mapper>

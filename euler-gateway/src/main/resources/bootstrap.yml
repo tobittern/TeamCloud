@@ -1,0 +1,53 @@
+webconfig:
+  tickExpireTime: 300 #签名过期时间
+  callOnce: true #是否允许签名多次使用
+  isDebug: true #是否调试环境
+  isCheckSign: true #是否校验签名
+  isShowCode: true #是否显示验证码
+  geetestCaptchaId: 81c21d3aa30d263daa65f6fe8dab4a4a
+  geetestCaptchaKey: 91b2deeacfb0c8b04ac9acb4b3c78fde
+  geetestDomain: http://gcaptcha4.geetest.com
+
+# Tomcat
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# Spring
+spring:
+  main:
+    # 此配置禁止放入 nacos 优先级不够
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
+
+  application:
+    # 应用名称
+    name: euler-gateway
+  profiles:
+    # 环境配置
+    active: @profiles.active@
+
+--- # nacos 配置
+spring:
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      discovery:
+        # 注册组
+        group: @nacos.discovery.group@
+        namespace: ${spring.profiles.active}
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: ${spring.profiles.active}
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - data-id: application.${spring.cloud.nacos.config.file-extension}
+            refresh: true
+          - data-id: datasource.${spring.cloud.nacos.config.file-extension}
+            refresh: true
+

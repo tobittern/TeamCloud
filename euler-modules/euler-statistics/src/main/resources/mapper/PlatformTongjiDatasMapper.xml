@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.PlatformTongjiDatasMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.PlatformTongjiDatas" id="PlatformTongjiDatasResult">
+        <result property="createDate" column="create_date"/>
+        <result property="id" column="id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="platform" column="platform"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="registerUsers" column="register_users"/>
+        <result property="payCnt" column="pay_cnt"/>
+        <result property="firstPayCnt" column="first_pay_cnt"/>
+        <result property="firstPayUsers" column="first_pay_users"/>
+        <result property="firstRelTotal" column="first_rel_total"/>
+        <result property="relCost" column="rel_cost"/>
+        <result property="ltv" column="ltv"/>
+        <result property="roi" column="roi"/>
+        <result property="channelId" column="channel_id"/>
+    </resultMap>
+
+
+    <sql id="selectSummaryPlatformTongjiDatasSql">
+        select sum(register_users)  as register_users,
+               sum(pay_cnt)         as pay_cnt,
+               sum(first_pay_cnt)   as first_pay_cnt,
+               sum(first_pay_users) as first_pay_users,
+               sum(first_rel_total) as first_rel_total,
+               sum(rel_cost)        as rel_cost
+        from platform_tongji_datas
+    </sql>
+
+
+    <select id="selectSummaryForPlatformTongjiDatas"
+            parameterType="com.euler.statistics.domain.vo.PlatformTongjiDatasVo"
+            resultType="com.euler.statistics.domain.vo.PlatformTongjiDatasVo">
+        <include refid="selectSummaryPlatformTongjiDatasSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

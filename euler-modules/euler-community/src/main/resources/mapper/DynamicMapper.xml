@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.DynamicMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Dynamic" id="DynamicResult">
+        <result property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="shortTitle" column="short_title"/>
+        <result property="cover" column="cover"/>
+        <result property="coverWidth" column="cover_width"/>
+        <result property="coverHeight" column="cover_height"/>
+        <result property="coverType" column="cover_type"/>
+        <result property="resourceUrl" column="resource_url"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="forwardNum" column="forward_num"/>
+        <result property="virtualForwardNum" column="virtual_forward_num"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="virtualPraiseNum" column="virtual_praise_num"/>
+        <result property="commentNum" column="comment_num"/>
+        <result property="virtualCommentNum" column="virtual_comment_num"/>
+        <result property="collectNum" column="collect_num"/>
+        <result property="virtualCollectNum" column="virtual_collect_num"/>
+        <result property="hitNum" column="hit_num"/>
+        <result property="virtualHitNum" column="virtual_hit_num"/>
+        <result property="reportNum" column="report_num"/>
+        <result property="isUp" column="is_up"/>
+        <result property="isTop" column="is_top"/>
+        <result property="isCanFav" column="is_can_fav"/>
+        <result property="isOnlyMeSee" column="is_only_me_see"/>
+        <result property="isOriginal" column="is_original"/>
+        <result property="location" column="location"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="area" column="area"/>
+        <result property="auditUserId" column="audit_user_id"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="prop1" column="prop1"/>
+        <result property="prop2" column="prop2"/>
+        <result property="prop3" column="prop3"/>
+        <result property="prop4" column="prop4"/>
+        <result property="prop5" column="prop5"/>
+        <result property="prop6" column="prop6"/>
+        <result property="prop7" column="prop7"/>
+        <result property="prop8" column="prop8"/>
+        <result property="prop9" column="prop9"/>
+        <result property="prop10" column="prop10"/>
+        <result property="onlineTime" column="online_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.community.domain.vo.DynamicVo" id="DynamicResultVo">
+        <result property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="shortTitle" column="short_title"/>
+        <result property="cover" column="cover"/>
+        <result property="coverWidth" column="cover_width"/>
+        <result property="coverHeight" column="cover_height"/>
+        <result property="coverType" column="cover_type"/>
+        <result property="resourceUrl" column="resource_url"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="forwardNum" column="forward_num"/>
+        <result property="virtualForwardNum" column="virtual_forward_num"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="virtualPraiseNum" column="virtual_praise_num"/>
+        <result property="commentNum" column="comment_num"/>
+        <result property="virtualCommentNum" column="virtual_comment_num"/>
+        <result property="collectNum" column="collect_num"/>
+        <result property="virtualCollectNum" column="virtual_collect_num"/>
+        <result property="hitNum" column="hit_num"/>
+        <result property="virtualHitNum" column="virtual_hit_num"/>
+        <result property="reportNum" column="report_num"/>
+        <result property="isUp" column="is_up"/>
+        <result property="isTop" column="is_top"/>
+        <result property="isCanFav" column="is_can_fav"/>
+        <result property="isOnlyMeSee" column="is_only_me_see"/>
+        <result property="isOriginal" column="is_original"/>
+        <result property="auditUserId" column="audit_user_id"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="prop1" column="prop1"/>
+        <result property="prop2" column="prop2"/>
+        <result property="prop3" column="prop3"/>
+        <result property="prop4" column="prop4"/>
+        <result property="prop5" column="prop5"/>
+        <result property="prop6" column="prop6"/>
+        <result property="prop7" column="prop7"/>
+        <result property="prop8" column="prop8"/>
+        <result property="prop9" column="prop9"/>
+        <result property="prop10" column="prop10"/>
+        <result property="onlineTime" column="online_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <sql id="selectDynamicSql">
+        select d.*
+        from dynamic d
+                 LEFT JOIN dynamic_topic dt on d.id = dt.dynamic_id
+                 LEFT JOIN topic t on dt.topic_id = t.id
+    </sql>
+
+    <select id="selectDynamic" parameterType="com.euler.community.domain.vo.DynamicVo"
+            resultMap="DynamicResultVo">
+        <include refid="selectDynamicSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

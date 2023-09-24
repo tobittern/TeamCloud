@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.CollectMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Collect" id="CollectResult">
+        <result property="id" column="id"/>
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="getUserCollectDynamicNum" parameterType="Long" resultType="java.lang.Integer">
+        select count(1)
+        from collect c
+                 left join `dynamic` d on c.dynamic_id = d.id
+        where c.member_id = #{memberId}
+          and c.status = '1'
+          and d.del_flag = '0'
+    </select>
+
+    <select id="getUserCollectCount" resultType="java.lang.Integer">
+        select count(1)
+        from collect c
+        left join `dynamic` d on c.dynamic_id = d.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <resultMap type="com.euler.community.domain.vo.CollectVo" id="CollectVoResult">
+        <result property="id" column="id"/>
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+
+    <select id="getUserCollectDynamicList" resultMap="CollectVoResult">
+        SELECT c.*
+        FROM collect c
+                 left join `dynamic` d
+                           on c.dynamic_id = d.id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+
+</mapper>

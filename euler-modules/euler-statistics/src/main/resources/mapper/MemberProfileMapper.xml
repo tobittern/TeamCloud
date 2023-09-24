@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.MemberProfileMapper">
+
+    <resultMap type="com.euler.sdk.api.domain.MemberProfile" id="MemberProfileResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="verifyStatus" column="verify_status"/>
+        <result property="avatar" column="avatar"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="birthday" column="birthday"/>
+        <result property="description" column="description"/>
+        <result property="remark" column="remark"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="signDate" column="sign_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+    </resultMap>
+    <select id="selectMemberNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(create_time, '%Y-%m-%d') summaryKey
+        FROM member_profile ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectMemberGroupNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(create_time, '%Y-%m-%d') summaryKey
+        FROM member_profile ${ew.getCustomSqlSegment} group by DATE_FORMAT(create_time, '%Y-%m-%d')
+    </select>
+</mapper>

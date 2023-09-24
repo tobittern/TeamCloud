@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.platform.mapper.OpenGameTransferLogMapper">
+
+    <resultMap type="com.euler.platform.domain.OpenGameTransferLog" id="OpenGameTransferLogResult">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="originalOpid" column="original_opid"/>
+        <result property="originalUsername" column="original_username"/>
+        <result property="originalCompanyName" column="original_company_name"/>
+        <result property="transferOpid" column="transfer_opid"/>
+        <result property="transferCompanyName" column="transfer_company_name"/>
+        <result property="transferUsername" column="transfer_username"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

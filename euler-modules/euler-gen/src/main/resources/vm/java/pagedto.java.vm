@@ -1,0 +1,49 @@
+package ${packageName}.domain.dto;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import com.euler.common.mybatis.core.page.PageQuery;
+import java.util.Date;
+
+#foreach ($import in $importList)
+import ${import};
+#end
+
+/**
+ * ${functionName}分页业务对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel("${functionName}分页业务对象")
+public class ${ClassName}PageDto extends PageQuery {
+
+    private static final long serialVersionUID = 1L;
+    #foreach ($column in $columns)
+#if(!$table.isSuperColumn($column.javaField) && ($column.query || $column.isInsert || $column.isEdit))
+
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty(value = "$column.columnComment")
+    private $column.javaType $column.javaField;
+#end
+#end
+
+    /**
+    * 开始时间
+    */
+    @ApiModelProperty("开始时间")
+    private String beginTime;
+
+    /**
+     * 结束时间
+     */
+    @ApiModelProperty("结束时间")
+    private String endTime;
+
+}

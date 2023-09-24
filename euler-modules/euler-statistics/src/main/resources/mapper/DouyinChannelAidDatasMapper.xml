@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.DouyinChannelAidDatasMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.DouyinChannelAidDatas" id="DouyinChannelAidDatasResult">
+        <result property="id" column="id"/>
+        <result property="platform" column="platform"/>
+        <result property="channel" column="channel"/>
+        <result property="aid" column="aid"/>
+        <result property="aidName" column="aid_name"/>
+        <result property="gameName" column="game_name"/>
+        <result property="users" column="users"/>
+        <result property="payUsers" column="pay_users"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="clickCnt" column="click_cnt"/>
+        <result property="activeUsers" column="active_users"/>
+        <result property="preChannel" column="pre_channel"/>
+        <result property="newRoles" column="new_roles"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.statistics.domain.vo.DouyinChannelAidDatasVo" id="DouyinChannelAidDatasVoResult">
+        <result property="id" column="id"/>
+        <result property="platform" column="platform"/>
+        <result property="channel" column="channel"/>
+        <result property="aid" column="aid"/>
+        <result property="aidName" column="aid_name"/>
+        <result property="gameName" column="game_name"/>
+        <result property="users" column="users"/>
+        <result property="payUsers" column="pay_users"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="clickCnt" column="click_cnt"/>
+        <result property="activeUsers" column="active_users"/>
+        <result property="preChannel" column="pre_channel"/>
+        <result property="newRoles" column="new_roles"/>
+    </resultMap>
+
+
+    <sql id="selectSummarySimpleDataSql">
+        select sum(users) as     users,
+               sum(pay_users)    pay_users,
+               sum(total_amount) total_amount,
+               sum(click_cnt)    click_cnt,
+               sum(active_users) active_users,
+               sum(new_roles)    new_roles
+        from douyin_channel_aid_datas
+    </sql>
+
+
+    <select id="selectSummarySimpleData" parameterType="com.euler.statistics.domain.vo.DouyinChannelAidDatasVo"
+            resultType="com.euler.statistics.domain.vo.DouyinChannelAidDatasVo">
+        <include refid="selectSummarySimpleDataSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+</mapper>

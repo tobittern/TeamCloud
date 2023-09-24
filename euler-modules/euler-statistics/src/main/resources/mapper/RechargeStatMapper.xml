@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.RechargeStatMapper">
+
+    <resultMap type="com.euler.statistics.api.domain.RechargeStat" id="RechargeStatResult">
+        <result property="id" column="id"/>
+        <result property="batchNo" column="batch_no"/>
+        <result property="dateId" column="date_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="userDateId" column="user_date_id"/>
+        <result property="memberDateId" column="member_date_id"/>
+
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="channelPackageCode" column="channel_package_code"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="orderId" column="order_id"/>
+        <result property="rechargeType" column="recharge_type"/>
+        <result property="orderType" column="order_type"/>
+        <result property="goodsType" column="goods_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="dataType" column="data_type"/>
+        <result property="gameDays" column="game_days"/>
+        <result property="gameDuration" column="game_duration"/>
+
+
+    </resultMap>
+
+    <resultMap id="diyRechargeResult" type="com.euler.statistics.domain.vo.DiyRechargeStatVo">
+        <result property="dateId" column="date_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="channelPackageCode" column="channel_package_code"/>
+        <result property="userDateId" column="user_date_id"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="platformCurrency" column="platform_currency"/>
+        <result property="balanceCurrency" column="balance_currency"/>
+        <result property="gameCurrency" column="game_currency"/>
+        <result property="yearCurrency" column="year_currency"/>
+    </resultMap>
+
+    <resultMap id="diyConsumptionRechargeResult" type="com.euler.statistics.domain.vo.DiyConsumptionRechargeStatVo">
+        <result property="dateId" column="date_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="channelPackageCode" column="channel_package_code"/>
+        <result property="userDateId" column="user_date_id"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="cashCurrency" column="cash_currency"/>
+        <result property="balanceCurrency" column="balance_currency"/>
+        <result property="platformCurrency" column="platform_currency"/>
+    </resultMap>
+
+    <resultMap id="diyRoleRechargeResult" type="com.euler.statistics.domain.vo.DiyRoleRechargeStatVo">
+        <result property="memberId" column="member_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="channelPackageCode" column="channel_package_code"/>
+        <result property="userDateId" column="user_date_id"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="todayCurrency" column="today_currency"/>
+        <result property="totalCurrency" column="total_currency"/>
+        <result property="gameDays" column="game_days"/>
+        <result property="gameDuration" column="game_duration"/>
+        <result property="lastLoginDate" column="last_login_date"/>
+
+    </resultMap>
+
+    <select id="getRechargeList" resultMap="diyRechargeResult">
+        SELECT date_id,
+               member_id,
+               channel_name,
+               channel_id,
+               channel_package_code,
+               game_name,
+               game_id,
+               user_date_id,
+               operation_platform,
+               sum(IF(recharge_type = '1' and goods_type != '1', order_amount, 0)) platform_currency,
+               sum(IF(recharge_type = '2' and goods_type != '1', order_amount, 0)) balance_currency,
+               sum(IF(order_type = 'G', order_amount, 0))                          game_currency,
+               sum(IF(goods_type = '1', order_amount, 0))                          year_currency
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+
+    </select>
+    <select id="getConsumptionRechargeList" resultMap="diyConsumptionRechargeResult">
+        SELECT date_id,
+               member_id,
+               channel_name,
+               channel_id,
+               channel_package_code,
+               game_name,
+               game_id,
+               user_date_id,
+               operation_platform,
+               sum(IF((pay_channel != 'wallet_balance' and pay_channel != 'wallet_platform'), order_amount, 0))  cash_currency,
+               sum(IF(pay_channel = 'wallet_balance', order_amount, 0))  balance_currency,
+               sum(IF(pay_channel = 'wallet_platform', order_amount, 0)) platform_currency
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+
+    </select>
+
+    <select id="getRoleRechargeList" resultMap="diyRoleRechargeResult">
+        SELECT DATE_FORMAT(gu.create_time, '%Y-%m-%d') user_date_id,
+               gu.member_id,
+               gu.game_id,
+               g.game_name,
+               ifnull(gu.channel_id, 0)                channel_id,
+               ifnull(gu.channel_name, '默认渠道')          channel_name,
+               gu.package_code                         channel_package_code,
+               gu.role_id,
+               gu.role_name,
+               g.operation_platform,-- 游戏平台：1、安卓，2、ios，3、h5
+               mp.register_ip,
+               gu.server_id,
+               gu.server_name,
+               gu.game_days,
+               gu.game_duration,
+               gu.update_time                          last_login_date,
+               sum(IF(DATE_FORMAT(bo.create_time, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d'),
+                      ifnull(bo.order_amount, 0), 0))  today_currency,
+               sum(ifnull(bo.order_amount, 0))         total_currency
+        FROM `game_user_management` gu
+                 INNER JOIN member_profile mp ON gu.member_id = mp.member_id
+                 INNER JOIN open_game g ON gu.game_id = g.id
+                 LEFT JOIN business_order bo ON gu.member_id = bo.member_id
+            AND gu.game_id = bo.game_id
+            AND bo.order_state IN (2, 3)
+            AND gu.role_id = bo.game_role_id
+            AND gu.server_id = bo.game_server_id
+            ${ew.getCustomSqlSegment}
+
+    </select>
+
+    <select id="getRoleRechargeSum" resultMap="diyRoleRechargeResult">
+        SELECT 'all'                                  member_id,
+               '汇总'                                   channel_name,
+               'all'                                  channel_id,
+               'all'                                  channel_package_code,
+               'all'                                  game_name,
+               'all'                                  game_id,
+               'all'                                  user_date_id,
+               '0'                                    operation_platform,
+               'all'                                  role_id,
+               'all'                                  role_name,
+               'all'                                  server_id,
+               'all'                                  server_name,
+               'all'                                  register_ip,
+               sum(IF(DATE_FORMAT(bo.create_time, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d'),
+                      ifnull(bo.order_amount, 0), 0)) today_currency,
+               sum(ifnull(bo.order_amount, 0))           total_currency,
+               'all'                                  game_duration,
+               'all'                                  game_days,
+               'all'                                  last_login_date
+        FROM `game_user_management` gu
+                 INNER JOIN member_profile mp ON gu.member_id = mp.member_id
+                 INNER JOIN open_game g ON gu.game_id = g.id
+                 LEFT JOIN business_order bo ON gu.member_id = bo.member_id
+            AND gu.game_id = bo.game_id
+            AND bo.order_state IN (2, 3)
+            AND gu.role_id = bo.game_role_id
+            AND gu.server_id = bo.game_server_id
+            ${ew.getCustomSqlSegment}
+    </select>
+    <select id="getRechargeSum" resultMap="diyRechargeResult">
+        SELECT 'all'                                                               date_id,
+               '汇总'                                                                member_id,
+               'all'                                                               channel_name,
+               'all'                                                               channel_id,
+               'all'                                                               channel_package_code,
+               'all'                                                               game_name,
+               'all'                                                               game_id,
+               'all'                                                               user_date_id,
+               '0'                                                                 operation_platform,
+               sum(IF(recharge_type = '1' and goods_type != '1', order_amount, 0)) platform_currency,
+               sum(IF(recharge_type = '2' and goods_type != '1', order_amount, 0)) balance_currency,
+               sum(IF(order_type = 'G', order_amount, 0))                          game_currency,
+               sum(IF(goods_type = '1', order_amount, 0))                          year_currency
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+    </select>
+    <select id="getConsumptionRechargeSum" resultMap="diyConsumptionRechargeResult">
+        SELECT 'all'                                                     date_id,
+               '汇总'                                                      member_id,
+               'all'                                                     channel_name,
+               'all'                                                     channel_id,
+               'all'                                                     channel_package_code,
+               'all'                                                     game_name,
+               'all'                                                     game_id,
+               'all'                                                     user_date_id,
+               '0'                                                       operation_platform,
+               sum(IF((pay_channel != 'wallet_balance' and pay_channel != 'wallet_platform'), order_amount, 0)) cash_currency,
+               sum(IF(pay_channel = 'wallet_balance', order_amount, 0))  balance_currency,
+               sum(IF(pay_channel = 'wallet_platform', order_amount, 0)) platform_currency
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <insert id="fillRechargeData">
+        INSERT into recharge_stat(date_id, data_type, batch_no, member_id, game_id, game_name, channel_id, channel_name,
+                                  channel_package_code, role_id, role_name, user_date_id,member_date_id, operation_platform,
+                                  order_amount, order_id, order_type, pay_channel, goods_type, recharge_type,
+                                  register_ip,
+                                  server_id, server_name, create_time)
+
+        SELECT DATE_FORMAT(bo.create_time, '%Y-%m-%d') date_id,
+               '1'                                     data_type,
+               #{batchNo}                              batch_no,
+               bo.member_id,
+               bo.game_id,
+               g.game_name,
+               ifnull(bo.game_channel_id, 0)           channel_id,
+               ifnull(bo.game_channel_name, '默认渠道')    channel_name,
+               bo.game_package_code                    channel_package_code,
+               bo.game_role_id,
+               bo.game_role_name,
+               DATE_FORMAT(gu.create_time, '%Y-%m-%d') user_date_id,
+               DATE_FORMAT(mp.create_time, '%Y-%m-%d') member_date_id,
+               g.operation_platform,-- 游戏平台：1、安卓，2、ios，3、h5
+               bo.order_amount,
+               bo.id                                   order_id,
+               bo.order_type,
+               bo.pay_channel,
+               ifnull(s.goods_type, '3')               goods_type,-- 商品类型：1、年费商品，2、充值商品，3、游戏商品
+               ifnull(s.get_type, '3')                 recharge_type,-- 充值类型：1、平台币，2、余额，3：游戏消费
+               mp.register_ip,
+               bo.game_server_id,
+               bo.game_server_name,
+               NOW()                                   create_time
+        FROM business_order bo
+                 INNER JOIN member_profile mp ON bo.member_id = mp.member_id AND bo.order_state IN (2, 3) AND
+                                                 bo.create_time BETWEEN #{beginTime} AND #{endTime}
+                 LEFT JOIN `game_user_management` gu ON gu.member_id = bo.member_id
+            AND gu.game_id = bo.game_id and gu.server_id = bo.game_server_id and gu.role_id = bo.game_role_id
+                 LEFT JOIN open_game g ON bo.game_id = g.id
+                 LEFT JOIN goods s ON bo.goods_id = s.id and bo.order_type = 'P'
+    </insert>
+
+    <select id="selectSumAmount" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT COALESCE(sum(IF((pay_channel != 'wallet_balance' and pay_channel != 'wallet_platform'), order_amount, 0)),0) summaryValue,
+               DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+    </select>
+    <select id="selectSumGroupAmount" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT COALESCE(sum(IF((pay_channel != 'wallet_balance' and pay_channel != 'wallet_platform'), order_amount, 0)), 0) summaryValue,
+               DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat ${ew.getCustomSqlSegment} group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+    <select id="selectOrderNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectOrderGroupNum" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT  COALESCE(count(1),0) summaryValue,DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat ${ew.getCustomSqlSegment} group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+</mapper>

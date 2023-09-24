@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.system.mapper.PayOrderMapper">
+
+    <resultMap type="com.euler.payment.domain.PayOrder" id="PayOrderResult">
+    <result property="id" column="id"/>
+    <result property="businessOrderId" column="business_order_id"/>
+    <result property="amount" column="amount"/>
+    <result property="state" column="state"/>
+    <result property="notifyState" column="notify_state"/>
+    <result property="clientIp" column="client_ip"/>
+    <result property="subject" column="subject"/>
+    <result property="body" column="body"/>
+    <result property="payChannel" column="pay_channel"/>
+    <result property="payChannelUser" column="pay_channel_user"/>
+    <result property="payChannelOrderNo" column="pay_channel_order_no"/>
+    <result property="payChannelExtra" column="pay_channel_extra"/>
+    <result property="refundState" column="refund_state"/>
+    <result property="refundTimes" column="refund_times"/>
+    <result property="refundAmount" column="refund_amount"/>
+    <result property="errCode" column="err_code"/>
+    <result property="errMsg" column="err_msg"/>
+    <result property="notifyUrl" column="notify_url"/>
+    <result property="returnUrl" column="return_url"/>
+    <result property="expiredTime" column="expired_time"/>
+    <result property="successTime" column="success_time"/>
+    <result property="createBy" column="create_by"/>
+    <result property="createTime" column="create_time"/>
+    <result property="updateBy" column="update_by"/>
+    <result property="updateTime" column="update_time"/>
+    <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

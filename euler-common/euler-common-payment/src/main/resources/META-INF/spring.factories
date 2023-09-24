@@ -1,0 +1,14 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.payment.config.AliPayConfig,\
+  com.euler.payment.config.ApplePayConfig,\
+  com.euler.common.payment.config.WxPayConfiguration,\
+  com.euler.common.payment.core.WxPay,\
+  com.euler.common.payment.core.WalletPay,\
+  com.euler.payment.core.ApplePay,\
+  com.euler.common.payment.core.AliPay,\
+  com.euler.common.payment.utils.PayUtils,\
+  com.euler.payment.utils.AppleVerifyUtil,\
+  com.euler.common.payment.config.PayMqConfig,\
+  com.euler.common.payment.core.WxComplainService,\
+  com.euler.common.payment.core.AliComplainService
+

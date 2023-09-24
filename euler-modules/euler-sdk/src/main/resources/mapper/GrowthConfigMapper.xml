@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GrowthConfigMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.GrowthConfig" id="GrowthConfigResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="grade" column="grade"/>
+        <result property="gradient" column="gradient"/>
+        <result property="upgradeValue" column="upgrade_value"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectVoByPrams" resultMap="GrowthConfigResult">
+        select distinct id, name, gradient, upgrade_value
+        from growth_config
+        where type = #{type} and grade = #{grade}
+    </select>
+
+</mapper>

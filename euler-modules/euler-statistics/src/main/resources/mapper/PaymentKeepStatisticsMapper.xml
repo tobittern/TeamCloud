@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.PaymentKeepStatisticsMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.PaymentKeepStatistics" id="PaymentKeepStatisticsResult">
+        <result property="id" column="id"/>
+        <result property="dataType" column="data_type"/>
+        <result property="rechargeType" column="recharge_type"/>
+        <result property="orderType" column="order_type"/>
+        <result property="goodsType" column="goods_type"/>
+        <result property="batchNo" column="batch_no"/>
+        <result property="memberId" column="member_id"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="registDate" column="regist_date"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap type="com.euler.statistics.domain.vo.PaymentKeepStatisticsVo" id="BasePaymentKeepListVoResult">
+        <result property="date" column="date"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameName" column="game_name"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="paymentUserNum" column="paymentUserNum"/>
+        <result property="day2" column="day2"/>
+        <result property="day3" column="day3"/>
+        <result property="day4" column="day4"/>
+        <result property="day5" column="day5"/>
+        <result property="day6" column="day6"/>
+        <result property="day7" column="day7"/>
+        <result property="day15" column="day15"/>
+        <result property="day30" column="day30"/>
+        <result property="day60" column="day60"/>
+        <result property="day90" column="day90"/>
+        <result property="remain2" column="remain2"/>
+        <result property="remain3" column="remain3"/>
+        <result property="remain4" column="remain4"/>
+        <result property="remain5" column="remain5"/>
+        <result property="remain6" column="remain6"/>
+        <result property="remain7" column="remain7"/>
+        <result property="remain15" column="remain15"/>
+        <result property="remain30" column="remain30"/>
+        <result property="remain60" column="remain60"/>
+        <result property="remain90" column="remain90"/>
+    </resultMap>
+
+    <insert id="fillPaymentKeepData">
+        INSERT into payment_keep_statistics(data_type, order_type, goods_type, recharge_type, batch_no, member_id,
+            channel_id, channel_name, package_code, game_id, game_name, operation_platform, role_id, role_name,
+            payment_date, regist_date, login_date, server_id, server_name, create_time)
+        SELECT distinct
+               '1'                                     data_type,
+               bo.order_type,
+               ifnull(s.goods_type, '3')               goods_type,-- 商品类型：1、年费商品，2、充值商品，3、游戏商品
+               ifnull(s.get_type, '3')                 recharge_type,-- 充值类型：1、平台币，2、余额，3：游戏消费
+               #{batchNo}                              batch_no,
+               bo.member_id,
+               ifnull(bo.game_channel_id, 0)           channel_id,
+               ifnull(bo.game_channel_name, '默认渠道')    channel_name,
+               bo.game_package_code                    package_code,
+               bo.game_id,
+               g.game_name,
+               g.operation_platform,-- 游戏平台：1、安卓，2、ios，3、h5
+               bo.game_role_id                          role_id,
+               bo.game_role_name                        role_name,
+               DATE_FORMAT(bo.create_time, '%Y-%m-%d') payment_date,
+               DATE_FORMAT(gu.create_time, '%Y-%m-%d') regist_date,
+               DATE_FORMAT(gu.update_time, '%Y-%m-%d') login_date,
+               bo.game_server_id                        server_id,
+               bo.game_server_name                      server_name,
+               NOW()                                   create_time
+        FROM business_order bo
+        INNER JOIN member_profile mp ON bo.member_id = mp.member_id AND bo.order_state IN (2, 3)
+        INNER JOIN `game_user_management` gu ON gu.member_id = bo.member_id
+            AND gu.game_id = bo.game_id and gu.server_id = bo.game_server_id and gu.role_id = bo.game_role_id
+            AND ((gu.update_time BETWEEN #{beginTime} AND #{endTime}) OR (bo.create_time BETWEEN #{beginTime} AND #{endTime}))
+        LEFT JOIN open_game g ON bo.game_id = g.id
+        LEFT JOIN goods s ON bo.goods_id = s.id and bo.order_type = 'P'
+    </insert>
+
+    <!-- 付费留存-->
+    <select id="getPaymentKeepList" resultMap="BasePaymentKeepListVoResult">
+         SELECT
+            payment_date date,
+            package_code,
+            ifnull(channel_name, '默认渠道') channel_name,
+            game_name,
+            operation_platform,
+            COUNT(DISTINCT member_id) paymentUserNum,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=1 THEN member_id ELSE NULL END) day2,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=2 THEN member_id ELSE NULL END) day3,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=3 THEN member_id ELSE NULL END) day4,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=4 THEN member_id ELSE NULL END) day5,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=5 THEN member_id ELSE NULL END) day6,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=6 THEN member_id ELSE NULL END) day7,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=14 THEN member_id ELSE NULL END) day15,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=29 THEN member_id ELSE NULL END) day30,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=59 THEN member_id ELSE NULL END) day60,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=89 THEN member_id ELSE NULL END) day90,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=1 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain2,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=2 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain3,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=3 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain4,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=4 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain5,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=5 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain6,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=6 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain7,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=14 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain15,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=29 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain30,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=59 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain60,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(login_date, payment_date)=89 THEN member_id ELSE NULL END)/COUNT(DISTINCT member_id)*100, 2), '%') remain90
+        FROM payment_keep_statistics
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <!-- 新增付费留存 -->
+    <select id="getNewRegistPaymentList" resultMap="BasePaymentKeepListVoResult">
+         SELECT
+            payment_date date,
+            package_code,
+            ifnull(channel_name, '默认渠道') channel_name,
+            game_name,
+            operation_platform,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END) paymentUserNum,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=1 THEN member_id ELSE NULL END) day2,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=2 THEN member_id ELSE NULL END) day3,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=3 THEN member_id ELSE NULL END) day4,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=4 THEN member_id ELSE NULL END) day5,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=5 THEN member_id ELSE NULL END) day6,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=6 THEN member_id ELSE NULL END) day7,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=14 THEN member_id ELSE NULL END) day15,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=29 THEN member_id ELSE NULL END) day30,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=59 THEN member_id ELSE NULL END) day60,
+            COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=89 THEN member_id ELSE NULL END) day90,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=1 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain2,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=2 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain3,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=3 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain4,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=4 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain5,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=5 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain6,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=6 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain7,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=14 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain15,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=29 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain30,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=59 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain60,
+            CONCAT(ROUND(COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 AND DATEDIFF(login_date, payment_date)=89 THEN member_id ELSE NULL END)/COUNT(DISTINCT CASE WHEN DATEDIFF(regist_date, payment_date)=0 THEN member_id ELSE NULL END)*100, 2), '%') remain90
+        FROM payment_keep_statistics
+        ${ew.getCustomSqlSegment}
+    </select>
+</mapper>
+

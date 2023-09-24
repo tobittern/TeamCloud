@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GameUseRecordMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.GameUseRecord" id="GameUseRecordResult">
+        <result property="partyAId" column="party_a_id"/>
+        <result property="partyBId" column="party_b_id"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+
+</mapper>

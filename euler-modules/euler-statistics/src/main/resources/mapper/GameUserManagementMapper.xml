@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GameUserManagementMapper">
+
+    <resultMap type="com.euler.sdk.api.domain.GameUserManagement" id="GameUserManagementResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gameIcon" column="game_icon"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleLevel" column="role_level"/>
+        <result property="vipLevel" column="vip_level"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+</mapper>

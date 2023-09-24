@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.platform.mapper.CaptchaCodeMapper">
+
+    <resultMap type="com.euler.platform.api.domain.CaptchaCode" id="EmailCodeResult">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="receiver" column="receiver"/>
+        <result property="code" column="code"/>
+        <result property="ip" column="ip"/>
+        <result property="type" column="type"/>
+        <result property="sendType" column="send_type"/>
+        <result property="isUse" column="is_use"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectById" parameterType="String" resultMap="EmailCodeResult">
+        SELECT id, user_id, receiver, code, ip, type,send_type, is_use from captcha_code
+        where id = #{id}
+    </select>
+
+    <select id="selectByReceiver" parameterType="String" resultMap="EmailCodeResult">
+        SELECT id, user_id, receiver, code, ip, type,send_type, is_use from captcha_code
+        where receiver = #{receiver}
+        order by id desc
+        limit 1
+    </select>
+
+    <update id="updateByReceiver" >
+        UPDATE captcha_code
+        SET
+            `user_id` = #{userId},
+            `is_use` = #{isUse}
+        WHERE `receiver`= #{receiver}
+    </update>
+</mapper>

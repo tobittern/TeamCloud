@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.PlatformTongjiChannelAidDatasMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.PlatformTongjiChannelAidDatas"
+               id="PlatformTongjiChannelAidDatasResult">
+        <result property="platform" column="platform"/>
+        <result property="preChannel" column="pre_channel"/>
+        <result property="channel" column="channel"/>
+        <result property="createDate" column="create_date"/>
+        <result property="aid" column="aid"/>
+        <result property="aidName" column="aid_name"/>
+        <result property="clickCnt" column="click_cnt"/>
+        <result property="activeUsers" column="active_users"/>
+        <result property="gameName" column="game_name"/>
+        <result property="registUsers" column="regist_users"/>
+        <result property="payUsers" column="pay_users"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="channelId" column="channel_id"/>
+    </resultMap>
+
+    <resultMap type="com.euler.statistics.domain.vo.PlatformTongjiChannelAidDatasVo"
+               id="PlatformTongjiChannelAidDatasVoResult">
+        <result property="platform" column="platform"/>
+        <result property="preChannel" column="pre_channel"/>
+        <result property="channel" column="channel"/>
+        <result property="createDate" column="create_date"/>
+        <result property="aid" column="aid"/>
+        <result property="aidName" column="aid_name"/>
+        <result property="clickCnt" column="click_cnt"/>
+        <result property="activeUsers" column="active_users"/>
+        <result property="gameName" column="game_name"/>
+        <result property="registUsers" column="regist_users"/>
+        <result property="payUsers" column="pay_users"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="channelId" column="channel_id"/>
+    </resultMap>
+
+
+    <sql id="selectSummaryPlatformTongjiChannelAidDatasSql">
+        select sum(click_cnt)    as click_cnt,
+               sum(active_users) as active_users,
+               sum(regist_users) as regist_users,
+               sum(pay_users)    as pay_users,
+               sum(total_amount) as total_amount
+        from platform_tongji_channel_aid_datas
+    </sql>
+
+
+    <select id="selectSummaryForPlatformTongjiChannelAidDatas"
+            parameterType="com.euler.statistics.domain.vo.PlatformTongjiChannelAidDatasVo"
+            resultType="com.euler.statistics.domain.vo.PlatformTongjiChannelAidDatasVo">
+        <include refid="selectSummaryPlatformTongjiChannelAidDatasSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

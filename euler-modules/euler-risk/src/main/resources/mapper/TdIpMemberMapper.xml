@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.TdIpMemberMapper">
+
+    <resultMap type="com.euler.risk.domain.entity.TdIpMember" id="TdIpMemberResult">
+        <result property="id" column="id"/>
+        <result property="ip" column="ip"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.risk.domain.vo.UserDeviceIdInfoVo" id="UserDeviceIdInfoVoResult">
+        <result property="id" column="id"/>
+        <result property="ip" column="ip"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="memberId" column="member_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="mobileType" column="mobile_type"/>
+        <result property="deviceMac" column="device_mac"/>
+        <result property="deviceOaid" column="device_oaid"/>
+        <result property="deviceImei" column="device_imei"/>
+        <result property="deviceAndroid" column="device_android"/>
+        <result property="deviceUuid" column="device_uuid"/>
+        <result property="deviceIdfa" column="device_idfa"/>
+        <result property="devicePushId" column="device_push_id"/>
+    </resultMap>
+
+    <sql id="UserDeviceIdInfoVoSql">
+        SELECT tim.id,
+               tim.ip,
+               tim.ip_address,
+               tim.device_id,
+               tim.account,
+               tim.mobile,
+               tim.user_id as member_id,
+               tim.create_time,
+               tdi.mobile_type,
+               tdi.device_mac,
+               tdi.device_oaid,
+               tdi.device_imei,
+               tdi.device_android,
+               tdi.device_uuid,
+               tdi.device_idfa,
+               tdi.device_push_id
+        FROM td_ip_member tim
+                 LEFT JOIN td_device_info tdi ON tim.device_id = tdi.id
+
+    </sql>
+
+
+    <select id="getDeviceDetailPageList" parameterType="com.euler.risk.domain.vo.UserDeviceIdInfoVo"
+            resultMap="UserDeviceIdInfoVoResult">
+        <include refid="UserDeviceIdInfoVoSql"/>
+        ${ew.getCustomSqlSegment}
+
+    </select>
+
+</mapper>

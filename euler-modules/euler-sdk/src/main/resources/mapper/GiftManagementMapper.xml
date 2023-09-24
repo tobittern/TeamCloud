@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GiftManagementMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.GiftManagement" id="GiftManagementResult">
+        <result property="id" column="id"/>
+        <result property="giftGroupName" column="gift_group_name"/>
+        <result property="gameId" column="game_id"/>
+        <result property="giftAmount" column="gift_amount"/>
+        <result property="receiveGrade" column="receive_grade"/>
+        <result property="isUp" column="is_up"/>
+        <result property="giftGroupIcon" column="gift_group_icon"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.sdk.domain.vo.GiftInfoVo" id="GiftInfoVoResult">
+        <result property="id" column="id"/>
+        <result property="giftName" column="gift_name"/>
+        <result property="giftGroupId" column="gift_group_id"/>
+        <result property="receiveGrade" column="receive_grade"/>
+        <result property="giftIntroduce" column="gift_introduce"/>
+        <result property="type" column="type"/>
+        <result property="rewardAmount" column="reward_amount"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="giftContentsSql">
+        SELECT i.id,
+               i.gift_name,
+               i.receive_grade,
+               i.gift_introduce,
+               i.`type`,
+               i.reward_amount
+        FROM gift_info i
+        INNER JOIN gift_management m ON i.gift_group_id = m.id
+    </sql>
+
+    <select id="getGiftContentsList" parameterType="com.euler.sdk.domain.dto.GiftInfoDto"
+            resultMap="GiftInfoVoResult">
+        <include refid="giftContentsSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getGiftGroupInfo" parameterType="Integer" resultType="com.euler.sdk.domain.vo.GiftManagementVo">
+        select id, gift_group_name, gift_amount, receive_grade, is_up, gift_group_icon
+        from gift_management where del_flag ='0' and game_id = #{gameId}
+        limit 1
+    </select>
+</mapper>

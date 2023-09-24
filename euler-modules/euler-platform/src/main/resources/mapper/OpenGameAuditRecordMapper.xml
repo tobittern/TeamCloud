@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.platform.mapper.OpenGameAuditRecordMapper">
+
+    <resultMap type="com.euler.platform.domain.OpenGameAuditRecord" id="OpenGameAuditRecordResult">
+        <result property="id" column="id"/>
+        <result property="auditUserId" column="audit_user_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="auditRecord" column="audit_record"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <select id="selectAuditNewOne" parameterType="java.util.List" resultMap="OpenGameAuditRecordResult">
+        SELECT *
+        FROM open_game_audit_record
+        where id in (SELECT MAX(id) FROM open_game_audit_record where del_flag = '0' AND game_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY game_id)
+
+    </select>
+</mapper>

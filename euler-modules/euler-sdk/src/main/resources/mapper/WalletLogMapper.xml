@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.WalletLogMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.WalletLog" id="WalletLogResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="walletId" column="wallet_id"/>
+        <result property="changeType" column="change_type"/>
+        <result property="isAdd" column="is_add"/>
+        <result property="description" column="description"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="changeValue" column="change_value"/>
+        <result property="walletOpType" column="wallet_op_type"/>
+        <result property="walletType" column="wallet_type"/>
+        <result property="gameId" column="game_id"/>
+        <result property="balanceType" column="balance_type"/>
+    </resultMap>
+
+    <select id="getBalanceTotal" parameterType="Long" resultType="com.euler.sdk.domain.vo.WalletLogVo">
+         SELECT distinct
+            member_id,
+            ifnull(sum(change_value), 0) AS change_value
+        from Wallet_log
+        where wallet_type = 1 and change_type = 2 and (balance_type = 1 or balance_type = 3)
+        and member_id = #{memberId}
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.system.mapper.GoodsMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.Goods" id="GoodsResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="goodsType" column="goods_type"/>
+        <result property="goodsIcon" column="goods_icon"/>
+        <result property="goodsBackgroud" column="goods_backgroud"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsLevel" column="goods_level"/>
+        <result property="goodsDiscount" column="goods_discount"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="goodsScribePrice" column="goods_scribe_price"/>
+        <result property="platformCurrency" column="platform_currency"/>
+        <result property="isLimitTime" column="is_limit_time"/>
+        <result property="limitTimeStart" column="limit_time_start"/>
+        <result property="limitTimeEnd" column="limit_time_end"/>
+        <result property="goodsDesc" column="goods_desc"/>
+        <result property="sort" column="sort"/>
+        <result property="isUp" column="is_up"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

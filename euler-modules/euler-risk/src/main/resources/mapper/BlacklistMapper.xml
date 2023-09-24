@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.BlacklistMapper">
+
+    <resultMap type="com.euler.risk.domain.entity.Blacklist" id="BlacklistResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="target" column="target"/>
+        <result property="banType" column="ban_type"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="reason" column="reason"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.risk.domain.vo.BlacklistVo" id="BlackResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="target" column="target"/>
+        <result property="banType" column="ban_type"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="reason" column="reason"/>
+    </resultMap>
+
+    <select id="selectBlackList" resultMap="BlackResult">
+        SELECT distinct
+            b.id,
+            b.type,
+            case when b.type='4' then td.device_mac
+            when b.type='5' then td.device_oaid
+            when b.type='6' then td.device_imei
+            when b.type='7' then td.device_android
+            when b.type='8' then td.device_uuid
+            when b.type='9' then td.device_idfa
+            when b.type='10' then td.device_push_id
+            else b.target end target,
+            b.ban_type,
+            b.start_time,
+            b.end_time,
+            b.reason
+        from blacklist b
+        left join td_device_info td on b.target = td.id
+        ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

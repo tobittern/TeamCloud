@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.HotGameMapper">
+
+    <resultMap type="com.euler.community.domain.entity.HotGame" id="HotGameResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gamePic" column="game_pic"/>
+        <result property="num" column="num"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!--查询点击量前10的游戏 -->
+    <select id="getHotGames" parameterType="java.lang.Integer" resultType="com.euler.community.domain.entity.HotGame">
+        SELECT h.game_id,
+               h.game_name,
+               h.game_pic,
+               h.operation_platform,
+               h.create_time,
+               sum(h.num) num
+        FROM `hot_game` h
+        where h.del_flag = '0' AND h.operation_platform = #{operationPlatform}
+        group by h.game_id
+        ORDER BY num desc, h.create_time desc LIMIT 10
+    </select>
+
+
+</mapper>

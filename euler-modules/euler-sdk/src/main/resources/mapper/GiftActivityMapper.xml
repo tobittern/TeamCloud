@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.GiftActivityMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.GiftActivity" id="GiftActivityResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="giftName" column="gift_name"/>
+        <result property="giftIntroduction" column="gift_introduction"/>
+        <result property="giftType" column="gift_type"/>
+        <result property="giftIcon" column="gift_icon"/>
+        <result property="rewardConditions" column="reward_conditions"/>
+        <result property="giftRewardType" column="gift_reward_type"/>
+        <result property="giftRewardNums" column="gift_reward_nums"/>
+        <result property="sort" column="sort"/>
+        <result property="isOnline" column="is_online"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

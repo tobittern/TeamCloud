@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.statistics.mapper.ChargeStatisticsMapper">
+
+    <resultMap type="com.euler.statistics.domain.entity.ChargeStatistics" id="ChargeStatisticsResult">
+        <result property="id" column="id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="newIncreaseCharge" column="new_increase_charge"/>
+        <result property="newRegisterCharge" column="new_register_charge"/>
+        <result property="newRegisterAvgCharge" column="new_register_avg_charge"/>
+        <result property="totalCharge" column="total_charge"/>
+        <result property="day" column="day"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.statistics.domain.vo.ChargeStatisticsVo" id="chargeResult">
+        <result property="day" column="date_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="serverId" column="server_id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="newIncreaseCharge" column="new_increase_charge"/>
+        <result property="newRegisterCharge" column="new_register_charge"/>
+        <result property="newRegisterAvgCharge" column="new_register_avg_charge"/>
+        <result property="newRegisterCount" column="new_register_count"/>
+        <result property="totalCharge" column="total_charge"/>
+        <result property="registerTime" column="register_time"/>
+    </resultMap>
+
+    <!-- 获取开放平台充值金额统计列表-->
+    <sql id="chargeStatSql">
+        SELECT distinct
+            date_id,
+            game_id,
+            game_name,
+            server_id,
+            `server_name`,
+            sum(ifnull(order_amount, 0)) new_increase_charge,
+            member_date_id register_time
+        FROM recharge_stat
+    </sql>
+
+    <!--带分页的列表-->
+    <select id="getChargeStatPageList" resultMap="chargeResult">
+        <include refid="chargeStatSql"/>
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+    <!--不带分页的列表-->
+    <select id="getChargeStatList" resultMap="chargeResult">
+        <include refid="chargeStatSql"/>
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+
+    <!-- 获取新增充值数据-->
+    <select id="getNewIncChargeForGroup" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT
+            COALESCE(sum(ifnull(order_amount, 0))) summaryValue, DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+    <!-- 获取新注册充值数据-->
+    <select id="getNewRegCharge" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT
+            sum(IF(DATE_FORMAT(date_id, '%Y-%m-%d') = DATE_FORMAT(member_date_id, '%Y-%m-%d'), ifnull(order_amount, 0), 0)) summaryValue,
+            DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getNewRegChargeForGroup" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT
+            sum(IF(DATE_FORMAT(date_id, '%Y-%m-%d') = DATE_FORMAT(member_date_id, '%Y-%m-%d'), ifnull(order_amount, 0), 0)) summaryValue,
+            DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+    <!-- 获取新注册人数-->
+    <select id="getNewRegCountForGroup" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT
+            count(IF(DATE_FORMAT(date_id, '%Y-%m-%d') = DATE_FORMAT(member_date_id, '%Y-%m-%d'), member_id, 0)) summaryValue,
+            DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+    <!-- 获取总充值数据-->
+    <select id="getTotalChargeForGroup" resultType="com.euler.statistics.domain.dto.SummaryResultDto">
+        SELECT
+            COALESCE(sum(ifnull(order_amount, 0))) summaryValue, DATE_FORMAT(date_id, '%Y-%m-%d') summaryKey
+        FROM recharge_stat
+        ${ew.getCustomSqlSegment}
+        group by DATE_FORMAT(date_id, '%Y-%m-%d')
+    </select>
+
+</mapper>

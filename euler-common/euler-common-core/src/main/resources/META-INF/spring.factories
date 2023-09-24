@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.core.utils.SpringUtils,\
+  com.euler.common.core.config.ApplicationConfig,\
+  com.euler.common.core.config.JacksonConfig,\
+  com.euler.common.core.config.ValidatorConfig,\
+  com.euler.common.core.config.MailConfig,\
+  com.euler.common.core.config.AsyncConfig
+
+

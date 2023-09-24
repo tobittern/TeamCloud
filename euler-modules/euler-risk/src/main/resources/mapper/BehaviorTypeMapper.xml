@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.BehaviorTypeMapper">
+
+    <resultMap type="com.euler.risk.api.domain.BehaviorType" id="BehaviorTypeResult">
+        <result property="id" column="id"/>
+        <result property="platform" column="platform"/>
+        <result property="device" column="device"/>
+        <result property="model" column="model"/>
+        <result property="code" column="code"/>
+        <result property="path" column="path"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="reflectExpression" column="reflect_expression"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.risk.domain.vo.TdDeviceBehaviorVo" id="deviceVoResult">
+        <result property="deviceId" column="device_id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="mobileType" column="mobile_type"/>
+        <result property="deviceMac" column="device_mac"/>
+        <result property="deviceOaid" column="device_oaid"/>
+        <result property="deviceImei" column="device_imei"/>
+        <result property="deviceAndroid" column="device_android"/>
+        <result property="deviceUuid" column="device_uuid"/>
+        <result property="deviceIdfa" column="device_idfa"/>
+        <result property="devicePushId" column="device_push_id"/>
+    </resultMap>
+
+    <sql id="deviceSql">
+        SELECT distinct
+            b.device_id,
+            b.account,
+            b.mobile,
+            b.user_id,
+            b.create_time,
+            bt.name,
+            tdi.mobile_type,
+            tdi.device_mac,
+            tdi.device_oaid,
+            tdi.device_imei,
+            tdi.device_android,
+            tdi.device_uuid,
+            tdi.device_idfa,
+            tdi.device_push_id
+        from  behavior b
+        left join behavior_type bt on b.behavior_type_id = bt.id
+        left join td_device_info tdi on b.device_id = tdi.id
+    </sql>
+
+    <select id="getDevicePageList" resultMap="deviceVoResult">
+        <include refid="deviceSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getDeviceList" resultMap="deviceVoResult">
+        <include refid="deviceSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <resultMap type="com.euler.risk.domain.vo.TdIpBehaviorVo" id="IpVoResult">
+        <result property="ip" column="ip"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="ipSql">
+        SELECT distinct
+            b.ip,
+-- 			b.ip_address,  暂时不做
+            b.device_id,
+			b.account,
+			b.mobile,
+            b.user_id,
+            bt.name,
+            b.create_time
+        from  behavior b
+        left join behavior_type bt on b.behavior_type_id = bt.id
+    </sql>
+
+    <select id="getIpPageList" resultMap="IpVoResult">
+        <include refid="ipSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getIpList" resultMap="IpVoResult">
+        <include refid="ipSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

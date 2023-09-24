@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.risk.mapper.TfDeviceSummaryMapper">
+
+    <resultMap type="com.euler.risk.domain.entity.TfDeviceSummary" id="TfDeviceSummaryResult">
+        <result property="id" column="id"/>
+        <result property="dateId" column="date_id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="registerNum" column="register_num"/>
+        <result property="loginNum" column="login_num"/>
+        <result property="roleCreateNum" column="role_create_num"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap type="com.euler.risk.domain.vo.TfDeviceSummaryVo" id="deviceSummaryResult">
+        <result property="id" column="id"/>
+        <result property="dateId" column="date_id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="mobileType" column="mobile_type"/>
+        <result property="deviceMac" column="device_mac"/>
+        <result property="deviceOaid" column="device_oaid"/>
+        <result property="deviceImei" column="device_imei"/>
+        <result property="deviceAndroid" column="device_android"/>
+        <result property="deviceUuid" column="device_uuid"/>
+        <result property="deviceIdfa" column="device_idfa"/>
+        <result property="devicePushId" column="device_push_id"/>
+        <result property="registerNum" column="register_num"/>
+        <result property="loginNum" column="login_num"/>
+        <result property="roleCreateNum" column="role_create_num"/>
+    </resultMap>
+
+    <select id="selectDeviceSummaryList" resultMap="deviceSummaryResult">
+        SELECT distinct tds.id,
+                        tds.date_id,
+                        tds.device_id,
+                        tdi.mobile_type,
+                        tdi.device_mac,
+                        tdi.device_oaid,
+                        tdi.device_imei,
+                        tdi.device_android,
+                        tdi.device_uuid,
+                        tdi.device_idfa,
+                        tdi.device_push_id,
+                        ifnull(sum(tds.register_num), 0) AS register_num,
+                        ifnull(sum(tds.login_num), 0) AS login_num,
+                        ifnull(sum(tds.role_create_num), 0) AS role_create_num
+        from tf_device_summary tds
+        left join td_device_info tdi on tds.device_id = tdi.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <insert id="fillData">
+        INSERT INTO tf_device_summary(date_id, device_id, register_num, login_num, role_create_num, create_time)
+
+        SELECT DATE_FORMAT(b.create_time, '%Y-%m-%d')      date_id,
+               b.device_id,
+               sum(if(bt.model_code = 'register', 1, 0))   register_num,
+               sum(if(bt.model_code = 'login', 1, 0))      login_num,
+               sum(if(bt.model_code = 'roleCreate', 1, 0)) role_create_num,
+               now()
+        from behavior b
+                 INNER JOIN behavior_type bt
+                            on b.behavior_type_id = bt.id
+        where b.device_id is not null AND b.create_time BETWEEN #{beginTime} AND #{endTime}
+        group by device_id
+
+    </insert>
+</mapper>

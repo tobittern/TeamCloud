@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.MessageMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Message" id="MessageResult">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="publishUser" column="publish_user"/>
+        <result property="platformType" column="platform_type"/>
+        <result property="pushUserType" column="push_user_type"/>
+        <result property="autoPush" column="auto_push"/>
+        <result property="pushStatus" column="push_status"/>
+        <result property="pushUsers" column="push_users"/>
+        <result property="pushTime" column="push_time"/>
+        <result property="isTop" column="is_top"/>
+        <result property="type" column="type"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.community.domain.vo.MessageVo" id="FrontMessageResult">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="platformType" column="platform_type"/>
+        <result property="pushUserType" column="push_user_type"/>
+        <result property="autoPush" column="auto_push"/>
+        <result property="pushUsers" column="push_users"/>
+        <result property="pushTime" column="push_time"/>
+        <result property="pushStatus" column="push_status"/>
+        <result property="readStatus" column="read_status"/>
+        <result property="publishUser" column="publish_user"/>
+        <result property="isTop" column="is_top"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getUnReadCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        from message m
+        left JOIN message_to_users mu on m.id = mu.message_id and m.del_flag = '0' and mu.del_flag = '0' AND mu.to_user_id = #{userId}
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectMessageList" resultMap="FrontMessageResult">
+        SELECT distinct
+        m.id,
+        m.title,
+        m.content,
+        m.platform_type,
+        m.push_user_type,
+        m.auto_push,
+        m.push_users,
+        m.push_time,
+        m.push_status,
+        IFNULL(mu.read_status, '0') read_status,
+        m.publish_user,
+        m.is_top,
+        m.type,
+        m.create_time
+        from message m
+        left JOIN message_to_users mu on m.id = mu.message_id and m.del_flag = '0' and mu.del_flag = '0'
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectFontMessageList" resultMap="FrontMessageResult">
+        SELECT distinct
+        m.id,
+        m.title,
+        m.content,
+        m.platform_type,
+        m.push_user_type,
+        m.auto_push,
+        m.push_users,
+        m.push_time,
+        m.push_status,
+        IFNULL(mu.read_status, '0') read_status,
+        m.publish_user,
+        m.is_top,
+        m.type,
+        m.create_time
+        from message m
+        left JOIN message_to_users mu on m.id = mu.message_id and m.del_flag = '0' and mu.del_flag = '0'
+        <choose>
+            <when test="type=='0'">
+                AND mu.to_user_id IS NULL
+            </when>
+            <otherwise>
+                AND mu.to_user_id = #{userId}
+            </otherwise>
+        </choose>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectFontMessageListNoLogin" resultMap="FrontMessageResult">
+        SELECT distinct
+        m.id,
+        m.title,
+        m.content,
+        m.platform_type,
+        m.push_user_type,
+        m.auto_push,
+        m.push_users,
+        m.push_time,
+        m.push_status,
+        IFNULL(mu.read_status, '0') read_status,
+        m.publish_user,
+        m.is_top,
+        m.type,
+        m.create_time
+        from message m
+        left JOIN message_to_users mu on m.id = mu.message_id and m.type= mu.type and m.del_flag = '0' and mu.del_flag = '0'
+        <choose>
+            <when test="type=='0' or type=='4'">
+                AND mu.to_user_id IS NULL
+            </when>
+        </choose>
+        ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.MemberProfileMapper">
+
+    <resultMap type="com.euler.sdk.api.domain.MemberProfile" id="MemberProfileResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="verifyStatus" column="verify_status"/>
+        <result property="avatar" column="avatar"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="birthday" column="birthday"/>
+        <result property="description" column="description"/>
+        <result property="remark" column="remark"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="signDate" column="sign_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+    </resultMap>
+
+    <resultMap type="com.euler.sdk.api.domain.MemberDetailVo" id="MemberDetailVoResult">
+        <result property="uniqueId" column="unique_id"/>
+        <result property="account" column="account"/>
+        <result property="mobile" column="mobile"/>
+        <result property="status" column="status"/>
+        <result property="memberId" column="member_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="verifyStatus" column="verify_status"/>
+        <result property="avatar" column="avatar"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="birthday" column="birthday"/>
+        <result property="description" column="description"/>
+        <result property="remark" column="remark"/>
+        <result property="registerIp" column="register_ip"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDeviceId" column="login_device_id"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="signDate" column="sign_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameName" column="game_name"/>
+        <result property="memberRightsName" column="member_rights_name"/>
+        <result property="memberRightsLevel" column="member_rights_level"/>
+        <result property="validateStartTime" column="validate_start_time"/>
+        <result property="validateEndTime" column="validate_end_time"/>
+        <result property="memberRightsStatus" column="member_rights_status"/>
+        <result property="password" column="password"/>
+        <result property="isOfficial" column="is_official"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="province" column="province"/>
+        <result property="cityId" column="city_id"/>
+        <result property="city" column="city"/>
+        <result property="areaId" column="area_id"/>
+        <result property="area" column="area"/>
+    </resultMap>
+
+    <sql id="memberDetailSql">
+        SELECT m.unique_id,
+               m.account,
+               m.mobile,
+               m.`status`,
+               mp.member_id,
+               mp.nick_name,
+               mp.real_name,
+               mp.id_card_no,
+               mp.verify_status,
+               mp.avatar,
+               mp.sex,
+               mp.email,
+               mp.birthday,
+               mp.description,
+               mp.remark,
+               mp.register_ip,
+               mp.login_ip,
+               mp.login_device_id,
+               mp.login_date,
+               mp.sign_date,
+               mp.create_by,
+               mp.create_time,
+               mp.update_by,
+               mp.update_time,
+               mp.channel_name,
+               mp.package_code,
+               mp.channel_id,
+               m.password,
+               mp.game_id,
+               mp.game_name,
+               mp.is_official,
+               mp.province_id,
+               mp.province,
+               mp.city_id,
+               mp.city,
+               mp.area_id,
+               mp.area,
+               ifnull(mr.`name`, '普通用户') member_rights_name,
+               ifnull(mr.`lever`, 0)     member_rights_level,
+               mr.validate_start_time,
+               mr.validate_end_time,
+               (CASE
+                    WHEN mr.validate_start_time IS NULL THEN 0
+                    WHEN mr.validate_end_time > now() THEN 1
+                    ELSE 2 END)          member_rights_status
+        FROM member_profile mp
+                 INNER JOIN member m ON mp.member_id = m.id
+                 LEFT JOIN member_rights mr ON mp.member_id = mr.id
+
+    </sql>
+
+    <select id="getMemberDetailPageList" parameterType="com.euler.sdk.domain.dto.MemberPageDto"
+            resultMap="MemberDetailVoResult">
+        <include refid="memberDetailSql"/>
+        ${ew.getCustomSqlSegment}
+
+    </select>
+    <select id="getMemberDetailByMemberId" resultMap="MemberDetailVoResult">
+        <include refid="memberDetailSql"/>
+        ${ew.getCustomSqlSegment}
+
+    </select>
+
+    <!-- 按照参数统计人数汇总 -->
+    <select id="selectUserNumByParam" parameterType="java.util.Map" resultType="com.euler.sdk.domain.vo.StatisticsChargeVo">
+        SELECT
+        IFNULL(count(m.member_id),0) as  num,
+        m.channel_id  as channelId
+        FROM
+        member_profile m
+        WHERE
+        m.del_flag = #{delFlag}  and m.channel_id is not null
+
+        <if test="endTime !=null">
+            and m.create_time &lt;= #{endTime}
+        </if>
+        <if test="startTime !=null">
+            and m.create_time &gt;= #{startTime}
+        </if>
+        group by m.channel_id
+    </select>
+
+</mapper>

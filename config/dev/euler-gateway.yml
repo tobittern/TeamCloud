@@ -1,0 +1,100 @@
+webconfig:
+  tickExpireTime: 300 #签名过期时间
+  callOnce: true #是否允许签名多次使用
+  isDebug: true #是否调试环境
+  isCheckSign: true #是否校验签名
+  isShowCode: true #是否显示验证码
+
+# 安全配置
+security:
+  # 验证码
+  captcha:
+    # 是否开启验证码
+    enabled: true
+    # 验证码类型 math 数组计算 char 字符验证
+    type: MATH
+    # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
+    category: CIRCLE
+    # 数字验证码位数
+    numberLength: 1
+    # 字符验证码长度
+    charLength: 4
+  # 防止XSS攻击
+  xss:
+    enabled: true
+    excludeUrls:
+      - /system/notice
+  # 不校验白名单
+  ignore:
+    whites:
+      - /code
+      - /auth/logout
+      - /auth/login
+      - /auth/register
+      - /*/v2/api-docs
+      - /csrf
+
+spring:
+  cloud:
+    # 网关配置
+    gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
+      routes:
+        # 认证中心
+        - id: euler-auth
+          uri: lb://euler-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            # 验证码处理
+            - CacheRequestFilter
+            - StripPrefix=1
+        # 代码生成
+        - id: euler-gen
+          uri: lb://euler-gen
+          predicates:
+            - Path=/code/**
+          filters:
+            - StripPrefix=1
+        # 系统模块
+        - id: euler-system
+          uri: lb://euler-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+        # 资源服务
+        - id: euler-resource
+          uri: lb://euler-resource
+          predicates:
+            - Path=/resource/**
+          filters:
+            - StripPrefix=1
+
+    # sentinel 配置
+    sentinel:
+      # nacos配置持久化
+      datasource:
+        ds1:
+          nacos:
+            server-addr: ${spring.cloud.nacos.server-addr}
+            dataId: sentinel-${spring.application.name}.json
+            groupId: ${spring.cloud.nacos.config.group}
+            namespace: ${spring.profiles.active}
+            data-type: json
+            rule-type: flow
+  datasource:
+    dynamic:
+      seata: false
+      # 设置默认的数据源或者数据源组,默认值即为 master
+      primary: master
+      datasource:
+        # 主库数据源
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: ${datasource.system-master.url}
+          username: ${datasource.system-master.username}
+          password: ${datasource.system-master.password}

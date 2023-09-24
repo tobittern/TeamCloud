@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.StatisticsChargeMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.StatisticsCharge" id="StatisticsChargeResult">
+        <result property="id" column="id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="userTotal" column="user_total"/>
+        <result property="chargeTotal" column="charge_total"/>
+        <result property="orderTotal" column="order_total"/>
+        <result property="userNum" column="user_num"/>
+        <result property="chargeNum" column="charge_num"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="day" column="day"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <delete id="deleteTrue" parameterType="com.euler.sdk.domain.entity.StatisticsCharge" >
+            delete from statistics_charge where id=#{id}
+    </delete>
+
+
+</mapper>

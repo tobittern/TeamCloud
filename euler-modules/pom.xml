@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-cloud</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>euler-system</module>
+        <module>euler-gen</module>
+        <module>euler-job</module>
+        <module>euler-resource</module>
+        <module>euler-platform</module>
+        <module>euler-sdk</module>
+        <module>euler-payment</module>
+        <module>euler-collection</module>
+        <module>euler-statistics</module>
+        <module>euler-community</module>
+        <module>euler-risk</module>
+
+    </modules>
+
+    <artifactId>euler-modules</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        euler-modules业务模块
+    </description>
+
+    <dependencies>
+        <!-- 自定义负载均衡(多团队开发使用) -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-loadbalancer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-mybatis</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

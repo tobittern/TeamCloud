@@ -1,0 +1,126 @@
+package ${packageName}.controller;
+
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.euler.common.core.domain.R;
+import com.euler.common.core.domain.dto.IdDto;
+import com.euler.common.core.validate.AddGroup;
+import com.euler.common.core.validate.EditGroup;
+import com.euler.common.core.validate.QueryGroup;
+import com.euler.common.core.web.controller.BaseController;
+import com.euler.common.excel.utils.ExcelUtil;
+import com.euler.common.log.annotation.Log;
+import com.euler.common.log.enums.BusinessType;
+import com.euler.common.mybatis.core.page.PageQuery;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import ${packageName}.domain.vo.${ClassName}Vo;
+import ${packageName}.domain.bo.${ClassName}Bo;
+import ${packageName}.domain.dto.${ClassName}PageDto;
+import ${packageName}.service.I${ClassName}Service;
+#if($table.crud || $table.sub)
+import com.euler.common.mybatis.core.page.TableDataInfo;
+#elseif($table.tree)
+#end
+
+import java.util.List;
+import java.util.Arrays;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * ${functionName}Controller
+ * 前端访问路由地址为:/${moduleName}/${businessName}
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Validated
+@Api(value = "${functionName}控制器" , tags = {"${functionName}管理" })
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/${businessName}" )
+public class ${ClassName}Controller extends BaseController {
+
+    @Autowired
+    private  I${ClassName}Service ${className}Service;
+
+    /**
+    * 查询${functionName}列表
+    */
+    @ApiOperation("查询${functionName}列表" )
+    @SaCheckPermission("${permissionPrefix}:list" )
+    @PostMapping("/list" )
+    #if($table.crud || $table.sub)
+    public TableDataInfo<${ClassName}Vo> list(@RequestBody ${ClassName}PageDto pageDto) {
+        return ${className}Service.queryPageList(pageDto);
+    }
+    #elseif($table.tree)
+    public R<List<${ClassName}Vo>> list(@RequestBody ${ClassName}Bo bo) {
+        List<${ClassName}Vo> list = ${className}Service.queryList(bo);
+        return R.ok(list);
+    }
+    #end
+
+    /**
+     * 导出${functionName}列表
+     */
+    @ApiOperation("导出${functionName}列表" )
+    @SaCheckPermission("${permissionPrefix}:export" )
+    @PostMapping("/export" )
+    public void export(@RequestBody ${ClassName}PageDto pageDto, HttpServletResponse response) {
+        List<${ClassName}Vo> list = ${className}Service.queryList(pageDto);
+        ExcelUtil.exportExcel(list, "${functionName}" , ${ClassName}Vo.class, response);
+    }
+
+    /**
+     * 获取${functionName}详细信息
+     */
+    @ApiOperation("获取${functionName}详细信息" )
+    @SaCheckPermission("${permissionPrefix}:query" )
+    @PostMapping("/getInfo" )
+    public R<${ClassName}Vo> getInfo(@RequestBody IdDto<${pkColumn.javaType}> idDto) {
+        return R.ok(${className}Service.queryById(idDto.getId()));
+    }
+
+    /**
+     * 新增${functionName}
+     */
+    @ApiOperation("新增${functionName}" )
+    @SaCheckPermission("${permissionPrefix}:add" )
+    @Log(title = "${functionName}" , businessType = BusinessType.INSERT)
+    @PostMapping("/add" )
+    public R add(@Validated(AddGroup.class) @RequestBody ${ClassName}Bo bo) {
+        return toAjax(${className}Service.insertByBo(bo));
+    }
+
+    /**
+     * 修改${functionName}
+     */
+    @ApiOperation("修改${functionName}" )
+    @SaCheckPermission("${permissionPrefix}:edit" )
+    @Log(title = "${functionName}" , businessType = BusinessType.UPDATE)
+    @PostMapping("/edit" )
+    public R edit(@Validated(EditGroup.class) @RequestBody ${ClassName}Bo bo) {
+        return toAjax(${className}Service.updateByBo(bo));
+    }
+
+    /**
+     * 删除${functionName}
+     */
+    @ApiOperation("删除${functionName}" )
+    @SaCheckPermission("${permissionPrefix}:remove" )
+    @Log(title = "${functionName}" , businessType = BusinessType.DELETE)
+    @PostMapping("/remove" )
+    public R remove(@RequestBody IdDto<String> idDto) {
+        String[] strArr = idDto.getId().split("," );
+        //主键为其他类型的时候，修改这个数组类型
+        Integer[] ids = Convert.toIntArray(strArr);
+        return toAjax(${className}Service.deleteWithValidByIds(Arrays.asList(${pkColumn.javaField}s)));
+
+    }
+}

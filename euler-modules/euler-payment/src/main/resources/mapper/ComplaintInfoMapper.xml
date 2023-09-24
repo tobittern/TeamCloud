@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.payment.mapper.ComplaintInfoMapper">
+
+    <resultMap type="com.euler.payment.domain.ComplaintInfo" id="ComplaintInfoResult">
+        <result property="id" column="id"/>
+        <result property="complaintId" column="complaint_id"/>
+        <result property="complaintTime" column="complaint_time"/>
+        <result property="complaintDetail" column="complaint_detail"/>
+        <result property="complaintedMchid" column="complainted_mchid"/>
+        <result property="complaintState" column="complaint_state"/>
+        <result property="payerPhone" column="payer_phone"/>
+        <result property="payerOpenid" column="payer_openid"/>
+        <result property="complaintFullRefunded" column="complaint_full_refunded"/>
+        <result property="incomingUserResponse" column="incoming_user_response"/>
+        <result property="problemDescription" column="problem_description"/>
+        <result property="userComplaintTimes" column="user_complaint_times"/>
+        <result property="problemType" column="problem_type"/>
+        <result property="applyRefundAmount" column="apply_refund_amount"/>
+        <result property="userTagList" column="user_tag_list"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

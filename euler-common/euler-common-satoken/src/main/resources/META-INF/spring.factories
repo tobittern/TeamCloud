@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.satoken.core.dao.PlusSaTokenDao,\
+  com.euler.common.satoken.core.service.SaInterfaceImpl,\
+  com.euler.common.satoken.config.SaTokenConfiguration

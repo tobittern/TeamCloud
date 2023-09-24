@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.web.config.I18nConfig,\
+  com.euler.common.web.config.FilterConfig,\
+  com.euler.common.web.config.NacosConfig,\
+  com.euler.common.web.config.UndertowConfig

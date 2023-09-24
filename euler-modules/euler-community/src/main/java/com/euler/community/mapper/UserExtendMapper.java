@@ -1,0 +1,15 @@
+package com.euler.community.mapper;
+
+import com.euler.common.mybatis.core.mapper.BaseMapperPlus;
+import com.euler.community.api.domain.UserExtend;
+import com.euler.community.domain.vo.UserExtendVo;
+
+/**
+ * 关注用户Mapper接口
+ *
+ * @author euler
+ * @date 2022-07-07
+ */
+public interface UserExtendMapper extends BaseMapperPlus<UserExtendMapper, UserExtend, UserExtendVo> {
+
+}

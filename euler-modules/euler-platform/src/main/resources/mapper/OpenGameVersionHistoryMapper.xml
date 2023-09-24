@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.platform.mapper.OpenGameVersionHistoryMapper">
+
+    <resultMap type="com.euler.platform.domain.OpenGameVersionHistory" id="OpenGameVersionHistoryResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="auditStatus" column="audit_status"/>
+        <result property="versionNumber" column="version_number"/>
+        <result property="versionNumberName" column="version_number_name"/>
+        <result property="versionDescription" column="version_description"/>
+        <result property="pictureUrl" column="picture_url"/>
+        <result property="gameInstallPackage" column="game_install_package"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <select id="selectVersionNewOne" parameterType="java.util.List" resultMap="OpenGameVersionHistoryResult">
+        SELECT *
+        FROM open_game_version_history
+        where id in (SELECT MAX(id) FROM open_game_version_history where del_flag = '0' AND game_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY game_id)
+
+    </select>
+
+</mapper>

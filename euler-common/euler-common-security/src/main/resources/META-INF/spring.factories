@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.security.handler.GlobalExceptionHandler,\
+  com.euler.common.security.config.SecurityConfiguration,\
+  com.euler.common.security.config.GlobalConfig

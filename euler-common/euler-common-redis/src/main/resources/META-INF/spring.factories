@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.euler.common.redis.config.RedisConfiguration,\
+  com.euler.common.redis.utils.LockHelper
+
+

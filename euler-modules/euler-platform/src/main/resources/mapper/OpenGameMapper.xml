@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.platform.mapper.OpenGameMapper">
+
+    <resultMap type="com.euler.platform.api.domain.OpenGame" id="OpenGameResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="versionId" column="version_id"/>
+        <result property="gameStatus" column="game_status"/>
+        <result property="onlineStatus" column="online_status"/>
+        <result property="gameName" column="game_name"/>
+        <result property="gameCategory" column="game_category"/>
+        <result property="operationPlatform" column="operation_platform"/>
+        <result property="rechargeCallback" column="recharge_callback"/>
+        <result property="callbackSecretKey" column="callback_secret_key"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="pictureUrl" column="picture_url"/>
+        <result property="gameIntroduction" column="game_introduction"/>
+        <result property="payType" column="pay_type"/>
+        <result property="gameTags" column="game_tags"/>
+        <result property="gameInstallPackage" column="game_install_package"/>
+        <result property="versionNumberName" column="version_number_name"/>
+        <result property="packageName" column="package_name"/>
+        <result property="autograph" column="autograph"/>
+        <result property="onTime" column="on_time"/>
+        <result property="offTime" column="off_time"/>
+        <result property="isbnIssuanceOrder" column="isbn_issuance_order"/>
+        <result property="isbnNumber" column="isbn_number"/>
+        <result property="copyrightUrl" column="copyright_url"/>
+        <result property="authorizationChain" column="authorization_chain"/>
+        <result property="otherQualifications" column="other_qualifications"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectGameAuditStatusCount" parameterType="String"
+            resultType="com.euler.common.core.domain.dto.KeyValueDto">
+        SELECT count(id) as `key`, game_status as `value`
+        FROM open_game
+        WHERE del_flag = '0'
+        GROUP BY `value`
+    </select>
+
+    <!-- 根据条件查询游戏数据-->
+    <select id="selectGameByParam" parameterType="java.util.Map" resultType="com.euler.platform.api.domain.OpenGame">
+        SELECT
+            g.id,
+            g.game_name ,
+            g.game_category,
+            g.game_tags,
+            g.icon_url
+        FROM
+            open_game g
+        WHERE
+            g.del_flag = #{delFlag}
+          and g.operation_platform=#{operationPlatform}
+          and (g.game_name like  concat('%',#{gameName},'%') 	or g.game_tags like concat('%',#{gameTags},'%')
+              <if test="cateGoryList !=null and cateGoryList.size()>0">
+                or g.game_category in
+                  <foreach collection="cateGoryList" item="item" open="(" close=")" separator="," >
+                      #{item}
+                  </foreach>
+              </if>
+              )
+            LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectGameByParamCount" parameterType="java.util.Map" resultType="int">
+        SELECT
+            count(g.id)
+        FROM
+            open_game g
+        WHERE
+            g.del_flag = #{delFlag}
+          and g.operation_platform=#{operationPlatform}
+          and (g.game_name like  concat('%',#{gameName},'%') 	or g.game_tags like concat('%',#{gameTags},'%')
+            <if test="cateGoryList !=null and cateGoryList.size()>0">
+                or g.game_category in
+                <foreach collection="cateGoryList" item="item" open="(" close=")" separator="," >
+                    #{item}
+                </foreach>
+            </if>
+              )
+    </select>
+
+    <select id="getGameList" resultMap="OpenGameResult">
+        SELECT distinct og.id, og.game_name, og.operation_platform, og.icon_url
+		from game_use_record g
+		left join channel c on c.id= g.party_a_id and g.type='4'
+		left join open_game og on g.party_b_id = og.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-cloud</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>euler-api-bom</module>
+        <module>euler-api-system</module>
+        <module>euler-api-resource</module>
+        <module>euler-api-platform</module>
+        <module>euler-api-sdk</module>
+        <module>euler-api-payment</module>
+        <module>euler-api-statistics</module>
+        <module>euler-api-community</module>
+        <module>euler-api-risk</module>
+    </modules>
+
+    <artifactId>euler-api</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        euler-api系统接口
+    </description>
+
+</project>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.ReportMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Report" id="ReportResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="reason" column="reason"/>
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.community.domain.vo.ReportVo" id="frontReportResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="reason" column="reason"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="commentsUserName" column="comments_user_name"/>
+        <result property="commentsContent" column="comments_content"/>
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectFrontDamicList" resultMap="frontReportResult">
+        SELECT
+        r.id,
+        r.relation_id,
+        r.member_id,
+        r.type,
+        r.reason,
+        r.create_time report_time,
+        r.dynamic_id
+        from report r
+        left JOIN `dynamic` d on r.relation_id = d.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectFrontCommentsList" resultMap="frontReportResult">
+        SELECT
+        r.id,
+        r.relation_id,
+        r.member_id,
+        r.type,
+        r.reason,
+        r.create_time report_time,
+        c.create_by comments_user_name,
+        c.comments_raw comments_content,
+        r.dynamic_id
+        from report r
+        left JOIN comment c on r.relation_id = c.id
+        ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

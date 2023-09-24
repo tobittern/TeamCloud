@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.DynamicTopicMapper">
+
+    <resultMap type="com.euler.community.domain.entity.DynamicTopic" id="DynamicTopicResult">
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="topicId" column="topic_id"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.common.core.domain.dto.IdNameDto" id="selectTopicNameByDynamicIdResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <sql id="selectTopicNameByDynamicIdSql">
+        select dt.dynamic_id as `id`,
+               t.topic_name  as `name`
+        from dynamic_topic dt
+                 LEFT JOIN topic t on dt.topic_id = t.id
+    </sql>
+
+    <select id="selectTopicNameByDynamicId" parameterType="com.euler.common.core.domain.dto.IdNameDto"
+            resultMap="selectTopicNameByDynamicIdResult">
+        <include refid="selectTopicNameByDynamicIdSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

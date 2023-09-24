@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.MemberRightsReceiveRecordMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.MemberRightsReceiveRecord" id="MemberRightsReceiveRecordResult">
+        <result property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="currentYear" column="current_year"/>
+        <result property="currentMonth" column="current_month"/>
+        <result property="receivePlatformCurrency" column="receive_platform_currency"/>
+        <result property="receiveScore" column="receive_score"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+</mapper>

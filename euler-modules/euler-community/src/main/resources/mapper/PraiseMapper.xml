@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.PraiseMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Praise" id="PraiseResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap type="com.euler.community.domain.vo.NewPraiseVo" id="NewPraiseResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 查询我的新点赞消息列表-->
+    <select id="getNewPraiseList" resultMap="NewPraiseResult">
+        SELECT distinct p.id,
+                        p.member_id,
+                        p.relation_id,
+                        p.type,
+                        ifnull(p.update_time, p.create_time) create_time
+        FROM praise p
+        LEFT JOIN message_to_users u ON p.member_id = u.create_by AND p.relation_id = u.relation_id AND u.type = '1' AND u.del_flag='0' AND p.del_flag='0'
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <resultMap type="com.euler.community.domain.vo.PraiseVo" id="PraiseVoResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+    </resultMap>
+
+
+    <select id="getUserPraiseDynamicList" resultMap="PraiseVoResult">
+        SELECT p.*
+        FROM praise p
+                 left join `dynamic` d
+                           on p.relation_id = d.id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getUserPraiseCommentList" resultMap="PraiseVoResult">
+        SELECT p.*
+        FROM praise p
+                 left join `comment` c
+                           on p.relation_id = c.id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getUseDynamicPraiseCount" resultType="java.lang.Integer">
+        select count(1)
+        from praise p
+        left join `dynamic` d on p.relation_id = d.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getUseCommentPraiseCount" resultType="java.lang.Integer">
+        select count(1)
+        from praise p
+        left join `comment` c on p.relation_id = c.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>

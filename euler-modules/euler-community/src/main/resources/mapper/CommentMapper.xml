@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.community.mapper.CommentMapper">
+
+    <resultMap type="com.euler.community.domain.entity.Comment" id="CommentResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="commentedMemberId" column="commented_member_id"/>
+        <result property="ascriptionDynamicId" column="ascription_dynamic_id"/>
+        <result property="ascriptionCommentId" column="ascription_comment_id"/>
+        <result property="type" column="type"/>
+        <result property="comments" column="comments"/>
+        <result property="commentsRaw" column="comments_raw"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="reportNum" column="report_num"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.community.domain.vo.CommentFrontVo" id="selectCommentForDynamicListVoResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="commentedMemberId" column="commented_member_id"/>
+        <result property="type" column="type"/>
+        <result property="comments" column="comments"/>
+        <result property="commentsRaw" column="comments_raw"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="reportNum" column="report_num"/>
+        <result property="nums" column="nums"/>
+        <result property="commentMemberId" column="comment_member_id"/>
+        <result property="ascriptionDynamicId" column="ascription_dynamic_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <sql id="selectCommentForDynamicListSql">
+        SELECT ca.id,
+               ca.relation_id,
+               ca.member_id,
+               ca.commented_member_id,
+               ca.type,
+               ca.comments,
+               ca.comments_raw,
+               ca.praise_num,
+               ca.report_num,
+               count(cb.id) as nums,
+               cb.member_id as comment_member_id,
+               ca.create_time
+        FROM `comment` ca
+                 LEFT JOIN `comment` cb on (cb.ascription_comment_id = ca.id)
+    </sql>
+
+
+    <select id="selectCommentForDynamicList" parameterType="com.euler.community.domain.vo.CommentFrontVo"
+            resultMap="selectCommentForDynamicListVoResult">
+        <include refid="selectCommentForDynamicListSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <resultMap type="com.euler.community.domain.vo.CommentFrontVo" id="selectCommentForCommentListVoResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="commentedMemberId" column="commented_member_id"/>
+        <result property="type" column="type"/>
+        <result property="comments" column="comments"/>
+        <result property="commentsRaw" column="comments_raw"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="reportNum" column="report_num"/>
+        <result property="nums" column="nums"/>
+        <result property="commentMemberId" column="comment_member_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+    <sql id="selectCommentForCommentListSql">
+        SELECT ca.id,
+               ca.relation_id,
+               ca.member_id,
+               ca.commented_member_id,
+               ca.type,
+               ca.comments,
+               ca.comments_raw,
+               ca.praise_num,
+               ca.report_num,
+               ca.create_time
+        FROM `comment` ca
+    </sql>
+
+
+    <select id="selectCommentForCommentList" parameterType="com.euler.community.domain.vo.CommentFrontVo"
+            resultMap="selectCommentForCommentListVoResult">
+        <include refid="selectCommentForCommentListSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <sql id="selectDynamicDivineEvaluationListSql">
+        SELECT a.*
+        FROM `comment` a
+                 LEFT JOIN
+             comment b ON a.ascription_dynamic_id = b.ascription_dynamic_id
+    </sql>
+
+
+    <select id="selectDynamicDivineEvaluation" parameterType="com.euler.community.domain.vo.CommentVo"
+            resultMap="selectDivineCommentResult">
+        <include refid="selectDynamicDivineEvaluationListSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <resultMap type="com.euler.community.domain.vo.NewCommentFrontVo" id="selectNewCommentList">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="commentedMemberId" column="commented_member_id"/>
+        <result property="type" column="type"/>
+        <result property="comments" column="comments"/>
+        <result property="commentsRaw" column="comments_raw"/>
+        <result property="ascriptionDynamicId" column="ascription_dynamic_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 新动态/评论消息列表-->
+    <select id="getNewCommentList" parameterType="com.euler.community.domain.vo.NewCommentFrontVo"
+            resultMap="selectNewCommentList">
+        SELECT distinct
+        ca.id,
+        ca.relation_id,
+        ca.member_id,
+        ca.commented_member_id,
+        ca.type,
+        ca.comments,
+        ca.comments_raw,
+        ifnull(ca.update_time, ca.create_time) create_time
+        FROM `comment` ca
+        <if test="type==1">
+            LEFT JOIN `comment` cb ON (cb.ascription_comment_id = ca.id) and cb.del_flag='0'
+        </if>
+        LEFT JOIN message_to_users u ON ca.commented_member_id = u.to_user_id AND u.type='2' AND u.del_flag='0' and ca.del_flag='0'
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <sql id="selectSumPraiseSql">
+        SELECT ascription_dynamic_id as `id`, ifnull(sum(praise_num), 0) AS `type`
+        FROM `comment`
+    </sql>
+
+    <select id="selectSumPraise" resultType="com.euler.common.core.domain.dto.IdTypeDto">
+        <include refid="selectSumPraiseSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <resultMap type="com.euler.community.domain.vo.CommentVo" id="selectDivineCommentResult">
+        <result property="id" column="id"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="commentedMemberId" column="commented_member_id"/>
+        <result property="type" column="type"/>
+        <result property="comments" column="comments"/>
+        <result property="praiseNum" column="praise_num"/>
+        <result property="reportNum" column="report_num"/>
+    </resultMap>
+
+    <sql id="selectDivineCommentSql">
+        select *, praise_num / #{max} as lv
+        from `comment`
+    </sql>
+
+    <select id="selectDivineComment" parameterType="com.euler.community.domain.vo.CommentVo"
+            resultMap="selectDivineCommentResult">
+        <include refid="selectDivineCommentSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+
+    <resultMap type="com.euler.common.core.domain.dto.IdTypeDto" id="getDynamicCommentReportNumResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <sql id="getDynamicCommentReportNumSql">
+        select ascription_dynamic_id as `id`,
+               sum(report_num) as `type`
+        from `comment`
+    </sql>
+
+    <select id="getDynamicCommentReportNum" parameterType="com.euler.common.core.domain.dto.IdTypeDto"
+            resultMap="getDynamicCommentReportNumResult">
+        <include refid="getDynamicCommentReportNumSql"/>
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getUseDynamicCommentCount" resultType="java.lang.Integer">
+        select count(1)
+        from comment c
+        left join `dynamic` d on c.relation_id = d.id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="getUseCommentComCount" resultType="java.lang.Integer">
+        select count(1)
+        from comment c
+        ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

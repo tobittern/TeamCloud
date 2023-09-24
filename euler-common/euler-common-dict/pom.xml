@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.euler</groupId>
+        <artifactId>euler-common</artifactId>
+        <version>0.9.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>euler-common-dict</artifactId>
+
+    <description>
+        euler-common-dict 字典
+    </description>
+
+    <dependencies>
+
+        <!-- Euler Common Security -->
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-common-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.euler</groupId>
+            <artifactId>euler-api-system</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+</project>

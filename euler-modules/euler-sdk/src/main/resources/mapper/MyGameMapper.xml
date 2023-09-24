@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.euler.sdk.mapper.MyGameMapper">
+
+    <resultMap type="com.euler.sdk.domain.entity.MyGame" id="MyGameResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="regionalService" column="regional_service"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameLevel" column="game_level"/>
+        <result property="gameIcon" column="game_icon"/>
+        <result property="gameName" column="game_name"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="platformServices" column="platform_services"/>
+        <result property="gameType" column="game_type"/>
+        <result property="gameDuration" column="game_duration"/>
+        <result property="nickname" column="nickname"/>
+        <result property="rank" column="rank"/>
+        <result property="openingServiceTime" column=" opening_service_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+
+    <resultMap type="com.euler.sdk.api.domain.MyGameVo" id="MyGameVoResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="gameId" column="game_id"/>
+        <result property="channelId" column="channel_id"/>
+        <result property="channelName" column="channel_name"/>
+        <result property="packageCode" column="package_code"/>
+        <result property="regionalService" column="regional_service"/>
+        <result property="gameId" column="game_id"/>
+        <result property="gameLevel" column="game_level"/>
+        <result property="gameIcon" column="game_icon"/>
+        <result property="gameName" column="game_name"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="platformServices" column="platform_services"/>
+        <result property="gameType" column="game_type"/>
+        <result property="gameDuration" column="game_duration"/>
+        <result property="nickname" column="nickname"/>
+        <result property="rank" column="rank"/>
+        <result property="gameInstallPackage" column="game_install_package"/>
+        <result property="packageName" column="package_name"/>
+        <result property="universalLink" column="universal_link"/>
+        <result property="urlScheme" column="url_scheme"/>
+    </resultMap>
+
+    <sql id="getMyGameVoPageListSql">
+        SELECT mg.*,
+               op.game_install_package,
+               op.package_name,
+               op.universal_link,
+               op.url_scheme
+        FROM my_game mg
+                 LEFT JOIN open_game op ON mg.game_id = op.id
+    </sql>
+
+    <select id="getMyGameVoPageList" parameterType="com.euler.sdk.api.domain.MyGameVo"
+            resultMap="MyGameVoResult">
+        <include refid="getMyGameVoPageListSql"/>
+        ${ew.getCustomSqlSegment}
+
+    </select>
+
+    <select id="getMyGameVo" parameterType="com.euler.sdk.api.domain.MyGameVo"
+            resultMap="MyGameVoResult">
+        <include refid="getMyGameVoPageListSql"/>
+        ${ew.getCustomSqlSegment}
+
+    </select>
+
+
+</mapper>
